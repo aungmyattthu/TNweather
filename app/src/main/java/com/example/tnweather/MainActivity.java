@@ -5,12 +5,13 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 import com.example.tnweather.model.TinyDB;
+import com.example.tnweather.view.WeatherView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements WeatherView {
 
     private TextView mTextMessage;
 
@@ -45,4 +46,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void loadingView() {
+
+    }
+
+    @Override
+    public void hideloading() {
+
+    }
+
+    @Override
+    public void errorView() {
+
+    }
 }
