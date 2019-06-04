@@ -26,6 +26,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginLeft="24dp"
                 android:text="@string/temperature"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="48sp"
                 />
             <TextView
@@ -34,14 +35,15 @@
                 android:layout_height="wrap_content"
                 android:text="@string/status"
                 android:layout_below="@id/temperature"
+                android:textColor="@color/colorPrimary"
                 android:layout_alignStart="@id/temperature"/>
 
             <ImageView
                 android:id="@+id/weather_img"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:src="@drawable/ic_launcher_background"/>
+                android:src="@drawable/sunny"/>
 
             <TextView
                 android:id="@+id/date"
@@ -49,6 +51,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/date"
                 android:textSize="32sp"
+                android:textColor="@color/colorPrimaryDark"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="24sp"
@@ -59,6 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/day"
+                android:textColor="@color/colorPrimary"
                 android:layout_below="@id/date"
                 />
 

@@ -24,13 +24,17 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+                 getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).addToBackStack("home").commit();
                     return true;
                 case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
+                  getSupportFragmentManager().beginTransaction().replace(R.id.main_container,AboutFragment.newInstance()).addToBackStack("about").commit();
+                    return true;
+
+                default:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).addToBackStack("home").commit();
                     return true;
             }
-            return false;
+
         }
     };
 
