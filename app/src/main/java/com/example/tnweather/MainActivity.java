@@ -33,11 +33,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements WeatherView,GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    private TextView mTextMessage;
-
     private TinyDB tinyDB;
-
-
     private Location location;
     private TextView locationTv;
     private GoogleApiClient googleApiClient;
@@ -77,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements WeatherView,Googl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         tinyDB = new TinyDB(this);
@@ -88,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements WeatherView,Googl
 
         permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
-
         permissionsToRequest = permissionsToRequest(permissions);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
