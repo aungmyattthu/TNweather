@@ -23,19 +23,31 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements WeatherView,GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener{
 
     private TinyDB tinyDB;
     private Location location;
     private TextView locationTv;
+
+    @BindView(R.id.progress_bar)
+    public ProgressBar progressBar;
+
+    @BindView(R.id.main_container)
+    public FrameLayout frameLayout;
+
     private GoogleApiClient googleApiClient;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private LocationRequest locationRequest;
@@ -72,12 +84,13 @@ public class MainActivity extends AppCompatActivity implements WeatherView,Googl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ButterKnife.bind(this);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         tinyDB = new TinyDB(this);
         locationTv = findViewById(R.id.location);
 
+        loadingView();
         Toast.makeText(this, tinyDB.getString("locationData"), Toast.LENGTH_SHORT).show();
 
 
@@ -101,12 +114,15 @@ public class MainActivity extends AppCompatActivity implements WeatherView,Googl
 
     @Override
     public void loadingView() {
+        progressBar.setVisibility(View.VISIBLE);
+        frameLayout.setVisibility(View.GONE);
 
     }
 
     @Override
     public void hideloading() {
-
+        progressBar.setVisibility(View.GONE);
+        frameLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
