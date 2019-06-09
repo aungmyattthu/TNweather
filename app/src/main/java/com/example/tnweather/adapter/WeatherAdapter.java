@@ -7,8 +7,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.tnweather.R;
+import com.example.tnweather.model.WeatherRespone;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +20,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHolder> {
+
+    private List<WeatherRespone> weatherRespones;
+    private RecyclerItemClickListener recyclerItemClickListener;
+
+    public WeatherAdapter(ArrayList<WeatherRespone> weatherRespones, RecyclerItemClickListener recyclerItemClickListener) {
+        this.weatherRespones = weatherRespones;
+        this.recyclerItemClickListener = recyclerItemClickListener;
+    }
 
     @NonNull
     @Override
@@ -25,7 +37,15 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
+        holder.temperature.setText(weatherRespones.get(position).getCnt());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recyclerItemClickListener.onItemClick(weatherRespones.get(position));
+            }
+        });
 
     }
 
@@ -48,5 +68,9 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
+    }
+
+   public interface RecyclerItemClickListener{
+        void onItemClick(WeatherRespone weatherRespone);
     }
 }

@@ -10,8 +10,9 @@ import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
+import com.example.tnweather.adapter.WeatherAdapter;
 import com.example.tnweather.model.TinyDB;
-import com.example.tnweather.view.WeatherView;
+import com.example.tnweather.model.WeatherRespone;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -23,6 +24,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -35,18 +38,13 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements WeatherView,GoogleApiClient.ConnectionCallbacks,
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener{
 
     private TinyDB tinyDB;
     private Location location;
     private TextView locationTv;
 
-    @BindView(R.id.progress_bar)
-    public ProgressBar progressBar;
-
-    @BindView(R.id.main_container)
-    public FrameLayout frameLayout;
 
     private GoogleApiClient googleApiClient;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -90,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView,Googl
         tinyDB = new TinyDB(this);
         locationTv = findViewById(R.id.location);
 
-        loadingView();
+
         Toast.makeText(this, tinyDB.getString("locationData"), Toast.LENGTH_SHORT).show();
 
 
@@ -109,24 +107,6 @@ public class MainActivity extends AppCompatActivity implements WeatherView,Googl
                 addApi(LocationServices.API).
                 addConnectionCallbacks(this).
                 addOnConnectionFailedListener(this).build();
-
-    }
-
-    @Override
-    public void loadingView() {
-        progressBar.setVisibility(View.VISIBLE);
-        frameLayout.setVisibility(View.GONE);
-
-    }
-
-    @Override
-    public void hideloading() {
-        progressBar.setVisibility(View.GONE);
-        frameLayout.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void errorView() {
 
     }
 
