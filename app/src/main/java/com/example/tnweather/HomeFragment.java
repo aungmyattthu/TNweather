@@ -38,9 +38,6 @@ public class HomeFragment extends Fragment implements MainContract.View {
     @BindView(R.id.progress_bar)
     public ProgressBar progressBar;
 
-    @BindView(R.id.main_container)
-    public FrameLayout frameLayout;
-
     public HomeFragment() {
     }
 

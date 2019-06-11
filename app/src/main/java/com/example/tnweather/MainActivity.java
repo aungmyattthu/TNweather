@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Location location;
     private TextView locationTv;
 
-
     private GoogleApiClient googleApiClient;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private LocationRequest locationRequest;
@@ -82,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         tinyDB = new TinyDB(this);

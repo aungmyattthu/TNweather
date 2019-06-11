@@ -17,7 +17,7 @@ public class WeatherListImpl implements MainContract.Model {
     public void getWeatherList(final OnFinishListener onFinishListener) {
         ApiService apiService = RestClient.getRetrofit().create(ApiService.class);
 
-        Call<WeatherRespone> call = apiService.getAllItems();
+        Call<WeatherRespone> call = apiService.getAllItems("latitude","longitude");
         call.enqueue(new Callback<WeatherRespone>() {
             @Override
             public void onResponse(Call<WeatherRespone> call, Response<WeatherRespone> response) {
