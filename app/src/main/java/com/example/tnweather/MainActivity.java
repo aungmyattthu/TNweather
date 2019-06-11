@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import butterknife.ButterKnife;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -29,16 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private TinyDB tinyDB;
     private TextView locationTv;
 
-    private GoogleApiClient googleApiClient;
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private LocationRequest locationRequest;
-    private static final long UPDATE_INTERVAL = 5000, FASTEST_INTERVAL = 5000; // = 5 seconds
-    // lists for permissions
-    private ArrayList<String> permissionsToRequest;
-    private ArrayList<String> permissionsRejected = new ArrayList<>();
-    private ArrayList<String> permissions = new ArrayList<>();
-    // integer for permissions results request
-    private static final int ALL_PERMISSIONS_RESULT = 1011;
+    private boolean mFirstUse = false;
+    private static final String FIRST_TIME = "first_time";
 
     private FusedLocationProviderClient fusedLocationClient;
 
@@ -57,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
 
                 default:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).addToBackStack("home").commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container, AboutFragment.newInstance()).addToBackStack("about").commit();
                     return true;
             }
 
@@ -70,8 +63,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        tinyDB = new TinyDB(this);
-        locationTv = findViewById(R.id.location);
+        /*tinyDB = new TinyDB(this);
+        *//*locationTv = findViewById(R.id.location);*//*
+
+
+        if(!tinyDB.getBoolean("firstTime")){
+            Toast.makeText(this, "sapa pyan", Toast.LENGTH_LONG).show();
+            firstUse();
+        }
+        else
+            Toast.makeText(this, "lee pyan", Toast.LENGTH_SHORT).show();*/
+
+
+
+
+
+
+
+    }
+
+    private void firstUse() {
 
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -95,11 +106,18 @@ public class MainActivity extends AppCompatActivity {
                         if (location != null) {
                             // Logic to handle location object
                             locationTv.setText(location.toString());
+                            tinyDB.putString("Latitute", String.valueOf(location.getLatitude()));
+                            tinyDB.putString("Longitute", String.valueOf(location.getLongitude()));
                         }
                     }
                 });
 
+        markAppUsed();
 
+    }
+
+    private void markAppUsed() {
+        tinyDB.putBoolean("firstTime",true);
 
     }
 
