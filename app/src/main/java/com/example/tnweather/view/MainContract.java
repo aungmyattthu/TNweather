@@ -1,9 +1,7 @@
 package com.example.tnweather.view;
 
-import com.example.tnweather.model.ListItem;
-import com.example.tnweather.model.WeatherRespone;
+import com.example.tnweather.model.WeatherResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface MainContract {
@@ -11,7 +9,7 @@ public interface MainContract {
     interface Model{
 
         interface OnFinishListener {
-            void onFinished(List<WeatherRespone> weatherArrayList);
+            void onFinished(List<WeatherResponse> weatherArrayList);
 
             void onFailure(Throwable t);
         }
@@ -25,7 +23,7 @@ public interface MainContract {
         void loadingView();
         void hideloading();
 
-        void setDataToRecyclerView(List<WeatherRespone> weatherArrayList);
+        void setDataToRecyclerView(List<WeatherResponse> weatherArrayList);
         void errorView(Throwable throwable);
 
     }
