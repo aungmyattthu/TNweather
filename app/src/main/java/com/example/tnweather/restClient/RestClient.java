@@ -21,7 +21,7 @@ public class RestClient {
                 .build();
 
         retrofit = new Retrofit.Builder().
-                baseUrl("api.openweathermap.org/")
+                baseUrl("http://api.openweathermap.org/data/2.5/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

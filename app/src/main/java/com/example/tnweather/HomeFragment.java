@@ -9,8 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.tnweather.adapter.WeatherAdapter;
-import com.example.tnweather.model.ListItem;
-import com.example.tnweather.model.WeatherRespone;
+import com.example.tnweather.model.WeatherResponse;
 import com.example.tnweather.presenter.WeatherResponePresenter;
 import com.example.tnweather.view.MainContract;
 
@@ -28,7 +27,7 @@ import butterknife.ButterKnife;
 public class HomeFragment extends Fragment implements MainContract.View {
 
     private WeatherResponePresenter presenter;
-    private List<WeatherRespone> weatherRespones;
+    private List<WeatherResponse> weatherRespones;
     private WeatherAdapter weatherAdapter;
     private WeatherAdapter.RecyclerItemClickListener clickListener;
 
@@ -64,12 +63,12 @@ public class HomeFragment extends Fragment implements MainContract.View {
     private void initUI(){
         clickListener = new WeatherAdapter.RecyclerItemClickListener() {
             @Override
-            public void onItemClick(WeatherRespone weatherRespone) {
+            public void onItemClick(WeatherResponse weatherRespone) {
                 Toast.makeText(getContext(), weatherRespone.getCity()+"", Toast.LENGTH_SHORT).show();
             }
         };
         weatherRespones = new ArrayList<>();
-        weatherAdapter = new WeatherAdapter((ArrayList<WeatherRespone>) weatherRespones,clickListener);
+        weatherAdapter = new WeatherAdapter((ArrayList<WeatherResponse>) weatherRespones,clickListener);
         LinearLayoutManager manager = new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false);
 
         recyclerView.setLayoutManager(manager);
@@ -90,7 +89,7 @@ public class HomeFragment extends Fragment implements MainContract.View {
     }
 
     @Override
-    public void setDataToRecyclerView(List<WeatherRespone> weatherArrayList) {
+    public void setDataToRecyclerView(List<WeatherResponse> weatherArrayList) {
        weatherRespones.addAll(weatherArrayList);
        weatherAdapter.notifyDataSetChanged();
     }

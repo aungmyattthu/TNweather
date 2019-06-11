@@ -3,13 +3,10 @@ package com.example.tnweather.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.tnweather.R;
-import com.example.tnweather.model.WeatherRespone;
-
-import org.w3c.dom.Text;
+import com.example.tnweather.model.WeatherResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +18,10 @@ import butterknife.ButterKnife;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHolder> {
 
-    private List<WeatherRespone> weatherRespones;
+    private List<WeatherResponse> weatherRespones;
     private RecyclerItemClickListener recyclerItemClickListener;
 
-    public WeatherAdapter(ArrayList<WeatherRespone> weatherRespones, RecyclerItemClickListener recyclerItemClickListener) {
+    public WeatherAdapter(ArrayList<WeatherResponse> weatherRespones, RecyclerItemClickListener recyclerItemClickListener) {
         this.weatherRespones = weatherRespones;
         this.recyclerItemClickListener = recyclerItemClickListener;
     }
@@ -71,6 +68,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
     }
 
    public interface RecyclerItemClickListener{
-        void onItemClick(WeatherRespone weatherRespone);
+        void onItemClick(WeatherResponse weatherRespone);
     }
 }
