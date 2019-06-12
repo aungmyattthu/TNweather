@@ -85,7 +85,7 @@ public class HomeFragment extends Fragment implements MainContract.View, Locatio
         /*tinyDB = new TinyDB(container.getContext());*/
         //locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         initUI();
-        presenter = new WeatherResponePresenter(this, new WeatherListImpl());
+        presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
 
         /*locationTv = findViewById(R.id.location);*/
        /* if (!tinyDB.getBoolean("firstTime")) {

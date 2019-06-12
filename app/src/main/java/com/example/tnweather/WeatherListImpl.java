@@ -21,13 +21,17 @@ public class WeatherListImpl implements MainContract.Model {
     private String appId = "41843abc3a0a307b7d4fc345c7d05270"; // api key
     private Context context;
 
-   /* public WeatherListImpl(Context context) {
+    public WeatherListImpl(Context context) {
+        this.context = context;
+    }
+
+    /* public WeatherListImpl(Context context) {
         this.context = context;
     }*/
 
     @Override
     public void getWeatherList(final OnFinishListener onFinishListener) {
-        /*tinyDB = new TinyDB(context);*/
+        tinyDB = new TinyDB(context);
 
         ApiService apiService = RestClient.getRetrofit().create(ApiService.class);
         Call<WeatherResponse> call = apiService.getAllItems(appId, tinyDB.getString("Latitude"), tinyDB.getString("Longitude"));
@@ -38,6 +42,7 @@ public class WeatherListImpl implements MainContract.Model {
 
                 List<ListItem> weatherRespones = response.body().getList();
                 onFinishListener.onFinished(weatherRespones);
+
 
 
             }

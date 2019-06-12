@@ -27,9 +27,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 public class MainActivity extends AppCompatActivity implements LocationListener {
-
-    private TinyDB tinyDB;
-    @BindView(R.id.locationTv)
+   // private WeatherListImpl weatherList;
+    public TinyDB tinyDB;
+    //@BindView(R.id.locationTv)
     public TextView locationTv;
     private LocationManager locationManager;
     private Location lastLocation;
@@ -84,28 +84,31 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         tinyDB = new TinyDB(this);
         ButterKnife.bind(this);
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        firstUse();
+
+        //weatherList = new WeatherListImpl(this);
+
         if(!tinyDB.getBoolean("firstTime"))
         {
-
-            Toast.makeText(this, tinyDB.getBoolean("firstTime")+"", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "leeepyan", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, tinyDB.getBoolean("firstTime")+"", Toast.LENGTH_SHORT).show();
             tinyDB.putBoolean("firstTime",true);
-            Log.i("Latitude",tinyDB.getString("Latitude"));
-            Log.i("Latitude",tinyDB.getString("Longitude"));
+            firstUse();
+            //Log.d("Latitude",tinyDB.getString("Latitude"));
+            //Log.d("Latitude",tinyDB.getString("Longitude"));
+
 
         }
         else
         {
-
+            //Toast.makeText(this, "sapapyan", Toast.LENGTH_SHORT).show();
             Toast.makeText(this, tinyDB.getString("Latitude")+"", Toast.LENGTH_SHORT).show();
-            Log.i("Latitude",tinyDB.getString("Latitude"));
-            Log.i("Latitude",tinyDB.getString("Longitude"));
+            //Log.d("Latitude",tinyDB.getString("Latitude"));
+            //Log.d("Latitude",tinyDB.getString("Longitude"));
 
         }
 
 
     }
-
     private void firstUse() {
 
         if(Build.VERSION.SDK_INT < 23) {
@@ -117,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
             }
 
         }
@@ -126,16 +129,27 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else
             {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
-                lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                locationTv.setText(lastLocation.getLatitude()+""+"   "+lastLocation.getLongitude());
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,this);
+                lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                /*Toast.makeText(this, "Location Test:"+lastLocation.toString(), Toast.LENGTH_LONG).show();*/
+                //locationTv.setText(lastLocation.getLatitude()+""+"   "+lastLocation.getLongitude());
                 tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
                 tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
-
+                Toast.makeText(this, "latitute:" + tinyDB.getString("Latitude"), Toast.LENGTH_SHORT).show();
+                //test();
             }
+            lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
+            tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
         }
+
         //  tinyDB.putBoolean("firstTime",false);
 
+    }
+
+
+    private void test(){
+        Toast.makeText(this, "latitute:" + tinyDB.getString("Latitude"), Toast.LENGTH_SHORT).show();
     }
 
     @Override
