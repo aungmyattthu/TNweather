@@ -49,7 +49,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-        return 0;
+        return weatherRespones.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder

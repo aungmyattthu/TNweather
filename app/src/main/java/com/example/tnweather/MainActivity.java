@@ -1,40 +1,57 @@
 package com.example.tnweather;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
-
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
 import com.example.tnweather.model.TinyDB;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
 
     private TinyDB tinyDB;
-    private TextView locationTv;
-
-    private boolean mFirstUse = false;
+    @BindView(R.id.locationTv)
+    public TextView locationTv;
+    private LocationManager locationManager;
+    private Location lastLocation;
+    private boolean mFirstUse = true;
     private static final String FIRST_TIME = "first_time";
 
 
-    private FusedLocationProviderClient fusedLocationClient;
+    public FusedLocationProviderClient fusedLocationClient;
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+                }
+
+            }
+        }
+    }
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -45,15 +62,14 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     Toast.makeText(MainActivity.this, "I am homefragment", Toast.LENGTH_SHORT).show();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).addToBackStack("home").commit();
+                   getSupportFragmentManager().beginTransaction().add(R.id.main_container, HomeFragment.newInstance()).addToBackStack("home").commit();
                     break;
                 case R.id.navigation_dashboard:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container, AboutFragment.newInstance()).addToBackStack("about").commit();
+                   getSupportFragmentManager().beginTransaction().add(R.id.main_container, AboutFragment.newInstance()).addToBackStack("about").commit();
                     Toast.makeText(MainActivity.this, "I am about fragment", Toast.LENGTH_SHORT).show();
                    break;
                 default:
-
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).addToBackStack("home").commit();
+                   getSupportFragmentManager().beginTransaction().add(R.id.main_container,HomeFragment.newInstance()).addToBackStack("home").commit();
 
                     break;
             }
@@ -68,63 +84,87 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        /*tinyDB = new TinyDB(this);
-        *//*locationTv = findViewById(R.id.location);*//*
+        tinyDB = new TinyDB(this);
+        ButterKnife.bind(this);
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        firstUse();
+        if(!tinyDB.getBoolean("firstTime"))
+        {
 
+            Toast.makeText(this, tinyDB.getBoolean("firstTime")+"", Toast.LENGTH_SHORT).show();
+            tinyDB.putBoolean("firstTime",true);
+            Log.i("Latitude",tinyDB.getString("Latitude"));
+            Log.i("Latitude",tinyDB.getString("Longitude"));
 
-        if(!tinyDB.getBoolean("firstTime")){
-            Toast.makeText(this, "sapa pyan", Toast.LENGTH_LONG).show();
-            firstUse();
         }
         else
-            Toast.makeText(this, "lee pyan", Toast.LENGTH_SHORT).show();*/
+        {
 
+            Toast.makeText(this, tinyDB.getString("Latitude")+"", Toast.LENGTH_SHORT).show();
+            Log.i("Latitude",tinyDB.getString("Latitude"));
+            Log.i("Latitude",tinyDB.getString("Longitude"));
 
-
-
-
+        }
 
 
     }
 
     private void firstUse() {
 
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if(Build.VERSION.SDK_INT < 23) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
-                //    Activity#requestPermissions
+                //    ActivityCompat#requestPermissions
                 // here to request the missing permissions, and then overriding
                 //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
-                // for Activity#requestPermissions for more details.
-                return;
+                // for ActivityCompat#requestPermissions for more details.
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            }
+
+        }
+        else {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            } else
+            {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
+                lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                locationTv.setText(lastLocation.getLatitude()+""+"   "+lastLocation.getLongitude());
+                tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
+                tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
+
             }
         }
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            // Logic to handle location object
-                            locationTv.setText(location.toString());
-                            tinyDB.putString("Latitute", String.valueOf(location.getLatitude()));
-                            tinyDB.putString("Longitute", String.valueOf(location.getLongitude()));
-                        }
-                    }
-                });
-
-        markAppUsed();
+        //  tinyDB.putBoolean("firstTime",false);
 
     }
 
-    private void markAppUsed() {
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
+
+   /* private void markAppUsed() {
         tinyDB.putBoolean("firstTime",true);
 
-    }
+    }*/
 
 }
 
