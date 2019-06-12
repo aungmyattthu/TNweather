@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         ButterKnife.bind(this);
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-        //weatherList = new WeatherListImpl(this);
 
         if(!tinyDB.getBoolean("firstTime"))
         {
