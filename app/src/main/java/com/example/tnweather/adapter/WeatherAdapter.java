@@ -36,7 +36,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
-        holder.temperature.setText(weatherRespones.get(position).getMain().getTempKf());
+        holder.temperature.setText(String.valueOf(weatherRespones.get(position).getMain().getTempKf()));
+        /**/
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -18,7 +18,7 @@ public class Main implements Serializable {
 	private double grndLevel;
 
 	@SerializedName("temp_kf")
-	private int tempKf;
+	private float tempKf;
 
 	@SerializedName("humidity")
 	private int humidity;
@@ -60,7 +60,7 @@ public class Main implements Serializable {
 		this.tempKf = tempKf;
 	}
 
-	public int getTempKf(){
+	public float getTempKf(){
 		return tempKf;
 	}
 
