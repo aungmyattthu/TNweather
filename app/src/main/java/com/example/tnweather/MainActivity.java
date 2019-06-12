@@ -30,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
     private TinyDB tinyDB;
     private TextView locationTv;
 
+    private boolean mFirstUse = false;
+    private static final String FIRST_TIME = "first_time";
+
+
     private FusedLocationProviderClient fusedLocationClient;
 
 
@@ -48,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "I am about fragment", Toast.LENGTH_SHORT).show();
                    break;
                 default:
+
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).addToBackStack("home").commit();
+
                     break;
             }
             return true;
@@ -62,8 +68,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        tinyDB = new TinyDB(this);
-        locationTv = findViewById(R.id.location);
+        /*tinyDB = new TinyDB(this);
+        *//*locationTv = findViewById(R.id.location);*//*
+
+
+        if(!tinyDB.getBoolean("firstTime")){
+            Toast.makeText(this, "sapa pyan", Toast.LENGTH_LONG).show();
+            firstUse();
+        }
+        else
+            Toast.makeText(this, "lee pyan", Toast.LENGTH_SHORT).show();*/
+
+
+
+
+
+
+
+    }
+
+    private void firstUse() {
 
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -87,11 +111,18 @@ public class MainActivity extends AppCompatActivity {
                         if (location != null) {
                             // Logic to handle location object
                             locationTv.setText(location.toString());
+                            tinyDB.putString("Latitute", String.valueOf(location.getLatitude()));
+                            tinyDB.putString("Longitute", String.valueOf(location.getLongitude()));
                         }
                     }
                 });
 
+        markAppUsed();
 
+    }
+
+    private void markAppUsed() {
+        tinyDB.putBoolean("firstTime",true);
 
     }
 

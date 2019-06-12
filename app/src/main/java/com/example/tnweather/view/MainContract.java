@@ -26,6 +26,7 @@ public interface MainContract {
         void setDataToRecyclerView(List<ListItem> weatherArrayList);
         void errorView(Throwable throwable);
 
+
     }
 
     interface Presenter{

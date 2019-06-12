@@ -1,5 +1,7 @@
 package com.example.tnweather.presenter;
 
+import android.content.Context;
+
 import com.example.tnweather.WeatherListImpl;
 
 import com.example.tnweather.model.ListItem;
