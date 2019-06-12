@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import butterknife.ButterKnife;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -28,17 +29,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TinyDB tinyDB;
     private TextView locationTv;
-
-    private GoogleApiClient googleApiClient;
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private LocationRequest locationRequest;
-    private static final long UPDATE_INTERVAL = 5000, FASTEST_INTERVAL = 5000; // = 5 seconds
-    // lists for permissions
-    private ArrayList<String> permissionsToRequest;
-    private ArrayList<String> permissionsRejected = new ArrayList<>();
-    private ArrayList<String> permissions = new ArrayList<>();
-    // integer for permissions results request
-    private static final int ALL_PERMISSIONS_RESULT = 1011;
 
     private FusedLocationProviderClient fusedLocationClient;
 
@@ -50,16 +40,18 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
+                    Toast.makeText(MainActivity.this, "I am homefragment", Toast.LENGTH_SHORT).show();
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).addToBackStack("home").commit();
-                    return true;
+                    break;
                 case R.id.navigation_dashboard:
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_container, AboutFragment.newInstance()).addToBackStack("about").commit();
-                    return true;
-
+                    Toast.makeText(MainActivity.this, "I am about fragment", Toast.LENGTH_SHORT).show();
+                   break;
                 default:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).addToBackStack("home").commit();
-                    return true;
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).addToBackStack("home").commit();
+                    break;
             }
+            return true;
 
         }
     };

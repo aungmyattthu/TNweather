@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.tnweather.adapter.WeatherAdapter;
+import com.example.tnweather.model.ListItem;
 import com.example.tnweather.model.WeatherResponse;
 import com.example.tnweather.presenter.WeatherResponePresenter;
 import com.example.tnweather.view.MainContract;
@@ -27,7 +28,7 @@ import butterknife.ButterKnife;
 public class HomeFragment extends Fragment implements MainContract.View {
 
     private WeatherResponePresenter presenter;
-    private List<WeatherResponse> weatherRespones;
+    private List<ListItem> weatherRespones;
     private WeatherAdapter weatherAdapter;
     private WeatherAdapter.RecyclerItemClickListener clickListener;
 
@@ -54,7 +55,7 @@ public class HomeFragment extends Fragment implements MainContract.View {
         View v = inflater.inflate(R.layout.home_fragment,container,false);
         ButterKnife.bind(this,v);
         initUI();
-        presenter = new WeatherResponePresenter(this);
+        presenter = new WeatherResponePresenter(this, new WeatherListImpl());
         presenter.requestDataFromServer();
 
         return v;
@@ -63,12 +64,12 @@ public class HomeFragment extends Fragment implements MainContract.View {
     private void initUI(){
         clickListener = new WeatherAdapter.RecyclerItemClickListener() {
             @Override
-            public void onItemClick(WeatherResponse weatherRespone) {
-                Toast.makeText(getContext(), weatherRespone.getCity()+"", Toast.LENGTH_SHORT).show();
+            public void onItemClick(ListItem weatherRespone) {
+                Toast.makeText(getContext(), weatherRespone.getMain().getTemp()+"", Toast.LENGTH_SHORT).show();
             }
         };
         weatherRespones = new ArrayList<>();
-        weatherAdapter = new WeatherAdapter((ArrayList<WeatherResponse>) weatherRespones,clickListener);
+        weatherAdapter = new WeatherAdapter((ArrayList<ListItem>) weatherRespones,clickListener);
         LinearLayoutManager manager = new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false);
 
         recyclerView.setLayoutManager(manager);
@@ -89,7 +90,7 @@ public class HomeFragment extends Fragment implements MainContract.View {
     }
 
     @Override
-    public void setDataToRecyclerView(List<WeatherResponse> weatherArrayList) {
+    public void setDataToRecyclerView(List<ListItem> weatherArrayList) {
        weatherRespones.addAll(weatherArrayList);
        weatherAdapter.notifyDataSetChanged();
     }

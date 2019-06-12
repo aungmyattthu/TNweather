@@ -1,5 +1,6 @@
 package com.example.tnweather;
 
+import com.example.tnweather.model.ListItem;
 import com.example.tnweather.model.TinyDB;
 import com.example.tnweather.model.WeatherResponse;
 import com.example.tnweather.restClient.ApiService;
@@ -23,7 +24,7 @@ public class WeatherListImpl implements MainContract.Model {
 
             @Override
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
-                List<WeatherResponse> weatherRespones = (List<WeatherResponse>) response.body();
+                List<ListItem> weatherRespones = response.body().getList();
                 onFinishListener.onFinished(weatherRespones);
             }
 

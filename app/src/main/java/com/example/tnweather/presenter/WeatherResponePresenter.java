@@ -2,6 +2,7 @@ package com.example.tnweather.presenter;
 
 import com.example.tnweather.WeatherListImpl;
 
+import com.example.tnweather.model.ListItem;
 import com.example.tnweather.model.WeatherResponse;
 
 import com.example.tnweather.view.MainContract;
@@ -13,14 +14,14 @@ public class WeatherResponePresenter implements MainContract.Presenter, MainCont
     private MainContract.View  weatherView;
     private MainContract.Model weatherListModel;
 
-    public WeatherResponePresenter(MainContract.View weatherView) {
+    public WeatherResponePresenter(MainContract.View weatherView,MainContract.Model weatherListModel) {
         this.weatherView = weatherView;
-        weatherListModel = new WeatherListImpl();
+        this.weatherListModel = weatherListModel;
     }
 
 
     @Override
-    public void onFinished(List<WeatherResponse> weatherArrayList) {
+    public void onFinished(List<ListItem> weatherArrayList) {
         weatherView.setDataToRecyclerView(weatherArrayList);
         if (weatherView != null)
         {
