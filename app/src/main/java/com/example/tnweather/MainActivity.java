@@ -63,17 +63,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 case R.id.navigation_home:
                     Toast.makeText(MainActivity.this, "I am homefragment", Toast.LENGTH_SHORT).show();
                    getSupportFragmentManager().beginTransaction().add(R.id.main_container, HomeFragment.newInstance()).addToBackStack("home").commit();
-                    break;
+                    return  true;
                 case R.id.navigation_dashboard:
                    getSupportFragmentManager().beginTransaction().add(R.id.main_container, AboutFragment.newInstance()).addToBackStack("about").commit();
                     Toast.makeText(MainActivity.this, "I am about fragment", Toast.LENGTH_SHORT).show();
-                   break;
-                default:
-                   getSupportFragmentManager().beginTransaction().add(R.id.main_container,HomeFragment.newInstance()).addToBackStack("home").commit();
+                   return true;
 
-                    break;
             }
-            return true;
+            return false;
 
         }
     };
