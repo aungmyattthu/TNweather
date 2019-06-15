@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
         }
 
-
+        //  tinyDB.putBoolean("firstTime",false);
 
     }
 

@@ -12,7 +12,7 @@ import retrofit2.http.Query;
 
 public interface ApiService {
     @GET("forecast?")
-    Call<WeatherResponse> getAllItems(@Query("appid") String appid, @Query("lat") String lat, @Query("lon") String lon);
+    Call<WeatherResponse> getAllItems(@Query("appid") String appid, @Query("lat") String lat, @Query("lon") String lon, @Query("units") String units);
 
 }
 
