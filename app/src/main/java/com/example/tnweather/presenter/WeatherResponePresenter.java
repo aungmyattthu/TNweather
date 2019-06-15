@@ -9,6 +9,7 @@ import com.example.tnweather.model.WeatherResponse;
 
 import com.example.tnweather.view.MainContract;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WeatherResponePresenter implements MainContract.Presenter, MainContract.Model.OnFinishListener {
