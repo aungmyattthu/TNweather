@@ -1,22 +1,15 @@
 package com.example.tnweather.adapter;
 
 import android.content.Context;
-import android.os.Build;
+
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.tnweather.R;
 import com.example.tnweather.model.ListItem;
-
-
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import java.util.Calendar;
 import java.util.List;
@@ -52,21 +45,12 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
 
             holder.temperature.setText(String.valueOf(Math.round(weatherResponses.get(position*8).getMain().getTemp())));
 
-            /**/
-            //Timestamp ts=new Timestamp(weatherResponses.get(position).getDt());
-
-
-            //Date date=new Date(ts.getTime());
-
-            //String d= new SimpleDateFormat();
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(weatherResponses.get(position*8).getDt() * 1000L);
             String date = DateFormat.format("dd", cal).toString();
 
             holder.date.setText(String.valueOf(date));
             holder.day.setText(DateFormat.format("EEE",cal));
-
-
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +63,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-        return weatherResponses.size();
+        return weatherResponses.size()/8;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder

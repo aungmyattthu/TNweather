@@ -73,6 +73,7 @@
                 android:layout_alignTop="@+id/temperature"
                 android:layout_toRightOf="@+id/temperature"
                 android:text="°C"
+                android:textColor="@color/colorPrimary"
                 android:textSize="24sp" />
 
         </RelativeLayout>
