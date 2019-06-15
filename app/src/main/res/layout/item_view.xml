@@ -66,6 +66,15 @@
                 android:layout_below="@id/date"
                 />
 
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/temperature"
+                android:layout_toRightOf="@+id/temperature"
+                android:text="°C"
+                android:textSize="24sp" />
+
         </RelativeLayout>
 
     </com.google.android.material.card.MaterialCardView>

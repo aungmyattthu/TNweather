@@ -30,16 +30,4 @@
 
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/locationTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="text view"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="@+id/main_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/main_container" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

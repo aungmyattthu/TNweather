@@ -61,12 +61,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    Toast.makeText(MainActivity.this, "I am homefragment", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "I am homefragment", Toast.LENGTH_SHORT).show();
                    getSupportFragmentManager().beginTransaction().add(R.id.main_container, HomeFragment.newInstance()).addToBackStack("home").commit();
                     break;
                 case R.id.navigation_dashboard:
                    getSupportFragmentManager().beginTransaction().add(R.id.main_container, AboutFragment.newInstance()).addToBackStack("about").commit();
-                    Toast.makeText(MainActivity.this, "I am about fragment", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "I am about fragment", Toast.LENGTH_SHORT).show();
                    break;
                 default:
                    getSupportFragmentManager().beginTransaction().add(R.id.main_container,HomeFragment.newInstance()).addToBackStack("home").commit();
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     @Override
     public void onLocationChanged(Location location) {
-
+        Log.d("LocationChanged", "onLocationChanged: "+location.getLongitude());
     }
 
     @Override

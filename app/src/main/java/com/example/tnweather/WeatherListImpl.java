@@ -34,7 +34,7 @@ public class WeatherListImpl implements MainContract.Model {
         tinyDB = new TinyDB(context);
 
         ApiService apiService = RestClient.getRetrofit().create(ApiService.class);
-        Call<WeatherResponse> call = apiService.getAllItems(appId, tinyDB.getString("Latitude"), tinyDB.getString("Longitude"));
+        Call<WeatherResponse> call = apiService.getAllItems(appId, tinyDB.getString("Latitude"), tinyDB.getString("Longitude"),"metric");
         call.enqueue(new Callback<WeatherResponse>() {
 
             @Override
