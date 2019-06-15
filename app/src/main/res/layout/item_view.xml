@@ -7,7 +7,7 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="128dp"
-        app:cardElevation="8dp"
+        app:cardElevation="4dp"
         app:contentPadding="8dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -27,16 +27,19 @@
                 android:layout_marginLeft="24dp"
                 android:text="@string/temperature"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="48sp"
+                android:textSize="32sp"
                 />
+
             <TextView
                 android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/status"
                 android:layout_below="@id/temperature"
-                android:textColor="@color/colorPrimary"
-                android:layout_alignStart="@id/temperature"/>
+                android:layout_alignStart="@id/temperature"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="8dp"
+                android:text="@string/status"
+                android:textColor="@color/colorPrimary" />
 
             <ImageView
                 android:id="@+id/weather_img"
@@ -49,13 +52,13 @@
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/date"
-                android:textSize="32sp"
-                android:textColor="@color/colorPrimaryDark"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="24sp"
-                />
+                android:text="@string/date"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="24sp" />
+
             <TextView
                 android:id="@+id/day"
                 android:layout_alignStart="@id/date"
@@ -73,7 +76,7 @@
                 android:layout_alignTop="@+id/temperature"
                 android:layout_toRightOf="@+id/temperature"
                 android:text="°C"
-                android:textSize="24sp" />
+                android:textSize="16sp" />
 
         </RelativeLayout>
 

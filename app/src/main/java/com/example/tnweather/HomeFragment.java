@@ -108,7 +108,7 @@ public class HomeFragment extends Fragment implements MainContract.View, Locatio
             }
         };
         weatherRespones = new ArrayList<>();
-        weatherAdapter = new WeatherAdapter((ArrayList<ListItem>) weatherRespones,clickListener);
+        weatherAdapter = new WeatherAdapter((ArrayList<ListItem>) weatherRespones,clickListener,getContext());
         LinearLayoutManager manager = new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(weatherAdapter);
