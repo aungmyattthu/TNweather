@@ -86,16 +86,47 @@ public class HomeFragment extends Fragment implements MainContract.View, Locatio
     }
 
     @Override
+
     public void setDataToRecyclerView(List<ListItem> weatherArrayList) {
        weatherRespones.addAll(weatherArrayList);
        weatherAdapter.notifyDataSetChanged();
+
+
+
     }
 
     @Override
     public void errorView(Throwable throwable) {
-        Toast.makeText(getActivity(), throwable.getMessage(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
     }
 
+    /*private void firstUse() {
+        if (Build.VERSION.SDK_INT < 23) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            }
+
+        } else {
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            } else {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+                lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                tinyDB.putString("Latitude", String.valueOf(lastLocation.getLatitude()));
+                tinyDB.putString("Longitude", String.valueOf(lastLocation.getLongitude()));
+
+            }
+
+
+        }
+    }*/
 
     @Override
     public void onLocationChanged(Location location) {

@@ -29,14 +29,17 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="32sp"
                 />
+
             <TextView
                 android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/status"
                 android:layout_below="@id/temperature"
-                android:textColor="@color/colorPrimary"
-                android:layout_alignStart="@id/temperature"/>
+                android:layout_alignStart="@id/temperature"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="8dp"
+                android:text="@string/status"
+                android:textColor="@color/colorPrimary" />
 
             <TextView
                 android:id="@+id/weather_img"
@@ -74,7 +77,7 @@
                 android:layout_toRightOf="@+id/temperature"
                 android:text="°C"
                 android:textColor="@color/colorPrimary"
-                android:textSize="24sp" />
+                android:textSize="16sp" />
 
         </RelativeLayout>
 
