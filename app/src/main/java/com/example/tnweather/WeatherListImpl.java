@@ -4,11 +4,13 @@ package com.example.tnweather;
 import com.example.tnweather.model.ListItem;
 import android.content.Context;
 import com.example.tnweather.model.TinyDB;
+import com.example.tnweather.model.WeatherItem;
 import com.example.tnweather.model.WeatherResponse;
 import com.example.tnweather.restClient.ApiService;
 import com.example.tnweather.restClient.RestClient;
 import com.example.tnweather.view.MainContract;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.core.content.ContextCompat;
@@ -36,14 +38,11 @@ public class WeatherListImpl implements MainContract.Model {
         ApiService apiService = RestClient.getRetrofit().create(ApiService.class);
         Call<WeatherResponse> call = apiService.getAllItems(appId, tinyDB.getString("Latitude"), tinyDB.getString("Longitude"));
         call.enqueue(new Callback<WeatherResponse>() {
-
             @Override
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
-
-                List<ListItem> weatherRespones = response.body().getList();
-                onFinishListener.onFinished(weatherRespones);
-
-
+                WeatherResponse weatherRespones = response.body();
+                List<ListItem> weatherData = weatherRespones.getList();
+                onFinishListener.onFinished(weatherData);
 
             }
 

@@ -27,18 +27,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 public class MainActivity extends AppCompatActivity implements LocationListener {
-   // private WeatherListImpl weatherList;
     public TinyDB tinyDB;
-    //@BindView(R.id.locationTv)
-    public TextView locationTv;
     private LocationManager locationManager;
     private Location lastLocation;
-    private boolean mFirstUse = true;
-    private static final String FIRST_TIME = "first_time";
-
-
-    public FusedLocationProviderClient fusedLocationClient;
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -46,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
                 }
 
             }
@@ -62,10 +53,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     Toast.makeText(MainActivity.this, "I am homefragment", Toast.LENGTH_SHORT).show();
-                   getSupportFragmentManager().beginTransaction().add(R.id.main_container, HomeFragment.newInstance()).addToBackStack("home").commit();
+                   getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
                     return  true;
                 case R.id.navigation_dashboard:
-                   getSupportFragmentManager().beginTransaction().add(R.id.main_container, AboutFragment.newInstance()).addToBackStack("about").commit();
+                   getSupportFragmentManager().beginTransaction().replace(R.id.main_container, AboutFragment.newInstance()).commit();
                     Toast.makeText(MainActivity.this, "I am about fragment", Toast.LENGTH_SHORT).show();
                    return true;
 
@@ -84,26 +75,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         tinyDB = new TinyDB(this);
         ButterKnife.bind(this);
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).commit();
 
         if(!tinyDB.getBoolean("firstTime"))
         {
-            //Toast.makeText(this, "leeepyan", Toast.LENGTH_SHORT).show();
-           // Toast.makeText(this, tinyDB.getBoolean("firstTime")+"", Toast.LENGTH_SHORT).show();
             tinyDB.putBoolean("firstTime",true);
             firstUse();
-            //Log.d("Latitude",tinyDB.getString("Latitude"));
-            //Log.d("Latitude",tinyDB.getString("Longitude"));
-
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).commit();
 
         }
         else
         {
-            //Toast.makeText(this, "sapapyan", Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, tinyDB.getString("Latitude")+"", Toast.LENGTH_SHORT).show();
-            //Log.d("Latitude",tinyDB.getString("Latitude"));
-            //Log.d("Latitude",tinyDB.getString("Longitude"));
-
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).commit();
+            Log.i("Latitude",tinyDB.getString("Latitude"));
+            Log.i("Longitude",tinyDB.getString("Longitude"));
         }
 
 
@@ -128,21 +113,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else
             {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,this);
-                lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                /*Toast.makeText(this, "Location Test:"+lastLocation.toString(), Toast.LENGTH_LONG).show();*/
-                //locationTv.setText(lastLocation.getLatitude()+""+"   "+lastLocation.getLongitude());
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
+                lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
                 tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
-                Toast.makeText(this, "latitute:" + tinyDB.getString("Latitude"), Toast.LENGTH_SHORT).show();
-                //test();
             }
             lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
             tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
         }
 
-        //  tinyDB.putBoolean("firstTime",false);
+
 
     }
 
@@ -170,11 +151,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public void onProviderDisabled(String s) {
 
     }
-
-   /* private void markAppUsed() {
-        tinyDB.putBoolean("firstTime",true);
-
-    }*/
 
 }
 

@@ -7,7 +7,7 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="128dp"
-        app:cardElevation="8dp"
+        app:cardElevation="4dp"
         app:contentPadding="8dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,11 +23,11 @@
                 android:id="@+id/temperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="24dp"
                 android:text="@string/temperature"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="48sp"
+                android:textSize="32sp"
                 />
             <TextView
                 android:id="@+id/status"
@@ -38,19 +38,19 @@
                 android:textColor="@color/colorPrimary"
                 android:layout_alignStart="@id/temperature"/>
 
-            <ImageView
+            <TextView
                 android:id="@+id/weather_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:src="@drawable/sunny"/>
+                />
 
             <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/date"
-                android:textSize="32sp"
+                android:textSize="24sp"
                 android:textColor="@color/colorPrimaryDark"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
