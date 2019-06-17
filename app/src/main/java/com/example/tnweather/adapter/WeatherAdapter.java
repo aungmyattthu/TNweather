@@ -7,8 +7,10 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.ImageView;
 import android.widget.TextView;
+
 
 import com.bumptech.glide.Glide;
 import com.example.tnweather.R;
@@ -59,6 +61,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
 
 
+
             holder.temperature.setText(String.valueOf(Math.round(weatherResponses.get(position*8).getMain().getTemp())));
 
             /**/
@@ -99,6 +102,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
         TextView status;
         public @BindView(R.id.day)
         TextView day;
+        public @BindView(R.id.weather_img)
+        TextView weatherImg;
         public @BindView(R.id.date)
         TextView date;
         public @BindView(R.id.weather_img)
