@@ -6,13 +6,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.tnweather.adapter.DetailRecyclerAdapter;
 import com.example.tnweather.adapter.WeatherAdapter;
 import com.example.tnweather.model.ListItem;
@@ -37,6 +41,8 @@ public class Detail extends AppCompatActivity implements MainContract.View{
     public @BindView(R.id.txt_windspeed)
     TextView windspeed;
 
+    public @BindView(R.id.weather_img)
+    ImageView weatherImg;
     public @BindView(R.id.today_date)
     TextView todayDate;
 
@@ -51,7 +57,8 @@ public class Detail extends AppCompatActivity implements MainContract.View{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_list);
         ButterKnife.bind(this);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Weather Forecast");
         presenter = new WeatherResponePresenter(this,new WeatherListImpl(this));
         presenter.requestDataFromServer();
         initUI();
@@ -68,11 +75,24 @@ public class Detail extends AppCompatActivity implements MainContract.View{
             humidity.setText("Humidity "+ intent.getStringExtra("humidity")+" %");
             pressure.setText("Pressure " + intent.getStringExtra("pressure")+" hPa");
             windspeed.setText("Wind Speed " + intent.getStringExtra("windspeed")+" km/hour");
+        Glide.with(this).load("http://openweathermap.org/img/w/"+intent.getStringExtra("img")+".png").into(weatherImg);
             recyclerView.setLayoutManager(manager);
             recyclerView.setAdapter(detailRecyclerAdapter);
 
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; go home
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

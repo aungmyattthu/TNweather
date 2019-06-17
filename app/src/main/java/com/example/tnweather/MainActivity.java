@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         tinyDB = new TinyDB(this);
         ButterKnife.bind(this);
+        setTitle("5 Days Weather Forecast");
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).commit();
 

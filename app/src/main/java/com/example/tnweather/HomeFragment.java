@@ -72,6 +72,7 @@ public class HomeFragment extends Fragment implements MainContract.View, Locatio
                 intent.putExtra("humidity",String.valueOf(weatherResponse.getMain().getHumidity()));
                 intent.putExtra("pressure",String.valueOf(weatherResponse.getMain().getPressure()));
                 intent.putExtra("windspeed", String.valueOf(Math.round(weatherResponse.getWind().getKilometer()*100)/100.0));
+                intent.putExtra("img",weatherResponse.getWeather().get(0).getIcon());
                 startActivity(intent);
             }
         });
