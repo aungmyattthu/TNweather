@@ -2,6 +2,7 @@ package com.example.tnweather;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -12,8 +13,15 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 import com.example.tnweather.model.TinyDB;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -47,9 +55,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-                }
-
-            }
+                }            }
         }
     }
 
@@ -92,24 +98,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         if(!tinyDB.getBoolean("firstTime"))
         {
-            //Toast.makeText(this, "leeepyan", Toast.LENGTH_SHORT).show();
-           // Toast.makeText(this, tinyDB.getBoolean("firstTime")+"", Toast.LENGTH_SHORT).show();
             tinyDB.putBoolean("firstTime",true);
+            checkLocationSetting();
             firstUse();
-            //Log.d("Latitude",tinyDB.getString("Latitude"));
-            //Log.d("Latitude",tinyDB.getString("Longitude"));
-
-
-        }
+            }
         else
         {
-            //Toast.makeText(this, "sapapyan", Toast.LENGTH_SHORT).show();
             Toast.makeText(this, tinyDB.getString("Latitude")+"", Toast.LENGTH_SHORT).show();
-            //Log.d("Latitude",tinyDB.getString("Latitude"));
-            //Log.d("Latitude",tinyDB.getString("Longitude"));
 
         }
-
 
     }
     private void firstUse() {
@@ -134,30 +131,57 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,this);
                 lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                /*Toast.makeText(this, "Location Test:"+lastLocation.toString(), Toast.LENGTH_LONG).show();*/
-                //locationTv.setText(lastLocation.getLatitude()+""+"   "+lastLocation.getLongitude());
                 tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
                 tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
                 Toast.makeText(this, "latitute:" + tinyDB.getString("Latitude"), Toast.LENGTH_SHORT).show();
-                //test();
+
             }
             lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
             tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
         }
 
-        //  tinyDB.putBoolean("firstTime",false);
-
     }
 
+    public void checkLocationSetting(){
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        SettingsClient client = LocationServices.getSettingsClient(this);
+        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
 
-    private void test(){
-        Toast.makeText(this, "latitute:" + tinyDB.getString("Latitude"), Toast.LENGTH_SHORT).show();
+        task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                // All location settings are satisfied. The client can initialize
+                // location requests here.
+                // ...
+            }
+        });
+
+        task.addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if (e instanceof ResolvableApiException) {
+                    // Location settings are not satisfied, but this can be fixed
+                    // by showing the user a dialog.
+                    try {
+                        // Show the dialog by calling startResolutionForResult(),
+                        // and check the result in onActivityResult().
+                        ResolvableApiException resolvable = (ResolvableApiException) e;
+                        resolvable.startResolutionForResult(MainActivity.this,
+                                1);
+                    } catch (IntentSender.SendIntentException sendEx) {
+                        // Ignore the error.
+                    }
+                }
+            }
+        });
     }
 
     @Override
     public void onLocationChanged(Location location) {
         Log.d("LocationChanged", "onLocationChanged: "+location.getLongitude());
+        tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
+        tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
     }
 
     @Override

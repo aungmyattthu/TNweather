@@ -1,6 +1,7 @@
 package com.example.tnweather.adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
     private Context context;
 
 
+
     public WeatherAdapter(ArrayList<ListItem> weatherResponses, RecyclerItemClickListener recyclerItemClickListener,Context context) {
         this.weatherResponses = weatherResponses;
         this.recyclerItemClickListener = recyclerItemClickListener;
@@ -48,6 +50,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_view,parent,false);
+
         return new MyViewHolder(view);
     }
 
@@ -100,9 +103,18 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
         TextView date;
         public @BindView(R.id.weather_img)
         ImageView weathericon;
+
+
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            Typeface custom_font = Typeface.createFromAsset(context.getAssets(),  "fonts/Futura Heavy Regular.ttf");
+
+            temperature.setTypeface(custom_font);
+            status.setTypeface(custom_font);
+            day.setTypeface(custom_font);
+            date.setTypeface(custom_font);
         }
     }
 
@@ -110,4 +122,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
    public interface RecyclerItemClickListener{
         void onItemClick(ListItem weatherResponse);
     }
+
+
 }
