@@ -1,27 +1,19 @@
 package com.example.tnweather.presenter;
 
-import android.content.Context;
-
-import com.example.tnweather.WeatherListImpl;
-
 import com.example.tnweather.model.ListItem;
-import com.example.tnweather.model.WeatherResponse;
-
 import com.example.tnweather.view.MainContract;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class WeatherResponePresenter implements MainContract.Presenter, MainContract.Model.OnFinishListener {
+public class WeatherDetailPresenter implements MainContract.Presenter,MainContract.Model.OnFinishListener {
 
     private MainContract.View  weatherView;
     private MainContract.Model weatherListModel;
 
-    public WeatherResponePresenter(MainContract.View weatherView,MainContract.Model weatherListModel) {
+    public WeatherDetailPresenter(MainContract.View weatherView, MainContract.Model weatherListModel) {
         this.weatherView = weatherView;
         this.weatherListModel = weatherListModel;
     }
-
 
     @Override
     public void onFinished(List<ListItem> weatherArrayList) {
@@ -31,14 +23,14 @@ public class WeatherResponePresenter implements MainContract.Presenter, MainCont
             weatherView.hideloading();
         }
 
+
     }
 
     @Override
     public void onFailure(Throwable t) {
-
+        weatherView.errorView(t);
         if (weatherView != null)
         {
-            weatherView.errorView(t);
             weatherView.hideloading();
         }
 
@@ -65,6 +57,5 @@ public class WeatherResponePresenter implements MainContract.Presenter, MainCont
             weatherView.loadingView();
         }
         weatherListModel.getWeatherList(this);
-
     }
 }

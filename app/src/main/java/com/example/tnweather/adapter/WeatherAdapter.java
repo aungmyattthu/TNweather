@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.tnweather.R;
 import com.example.tnweather.model.ListItem;
+import com.example.tnweather.model.WeatherResponse;
 
 import java.util.Calendar;
 import java.util.List;
@@ -30,10 +31,13 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
     private List<ListItem> weatherResponses;
     private RecyclerItemClickListener recyclerItemClickListener;
     private Context context;
-    public WeatherAdapter(Context context, List<ListItem> weatherRespones, RecyclerItemClickListener recyclerItemClickListener) {
+    public WeatherAdapter(Context context, List<ListItem> weatherRespones) {
         this.weatherResponses = weatherRespones;
-        this.recyclerItemClickListener = recyclerItemClickListener;
         this.context = context;
+    }
+
+    public void setRecyclerItemClickListener(RecyclerItemClickListener recyclerItemClickListener) {
+        this.recyclerItemClickListener = recyclerItemClickListener;
     }
 
     @NonNull
@@ -48,7 +52,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
 
 
             holder.temperature.setText(String.valueOf(Math.round(weatherResponses.get(position*8).getMain().getTemp())));
-
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(weatherResponses.get(position*8).getDt() * 1000L);
             String date = DateFormat.format("dd", cal).toString();
@@ -61,7 +64,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recyclerItemClickListener.onItemClick(weatherResponses.get(position));
+                int i= holder.getAdapterPosition();
+                recyclerItemClickListener.onItemClick(weatherResponses.get(i*8));
             }
         });
 

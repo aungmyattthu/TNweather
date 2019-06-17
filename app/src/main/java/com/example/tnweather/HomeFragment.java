@@ -1,5 +1,6 @@
 package com.example.tnweather;
 
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -7,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-
 import com.example.tnweather.adapter.WeatherAdapter;
 import com.example.tnweather.model.ListItem;
 import com.example.tnweather.presenter.WeatherResponePresenter;
@@ -59,15 +58,23 @@ public class HomeFragment extends Fragment implements MainContract.View, Locatio
     }
 
     private void initUI() {
-
-        clickListener = new WeatherAdapter.RecyclerItemClickListener() {
-            @Override
-            public void onItemClick(ListItem weatherRespone) {
-                Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
-            }
-        };
         weatherRespones = new ArrayList<>();
-        weatherAdapter = new WeatherAdapter(getContext(),weatherRespones,clickListener);
+        weatherAdapter = new WeatherAdapter(getContext(),weatherRespones);
+        weatherAdapter.setRecyclerItemClickListener(new WeatherAdapter.RecyclerItemClickListener() {
+            @Override
+            public void onItemClick(ListItem weatherResponse) {
+                Intent intent = new Intent(getActivity(), Detail.class);
+                intent.putExtra("weatherData",weatherResponse);
+                intent.putExtra("weatherData",weatherResponse);
+                intent.putExtra("temperature",String.valueOf(Math.round(weatherResponse.getMain().getTemp())));
+                intent.putExtra("status",weatherResponse.getWeather().get(0).getMain());
+                intent.putExtra("todaydate",weatherResponse.date());
+                intent.putExtra("humidity",String.valueOf(weatherResponse.getMain().getHumidity()));
+                intent.putExtra("pressure",String.valueOf(weatherResponse.getMain().getPressure()));
+                intent.putExtra("windspeed", String.valueOf(Math.round(weatherResponse.getWind().getKilometer()*100)/100.0));
+                startActivity(intent);
+            }
+        });
         LinearLayoutManager manager = new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(weatherAdapter);
@@ -88,45 +95,17 @@ public class HomeFragment extends Fragment implements MainContract.View, Locatio
     @Override
 
     public void setDataToRecyclerView(List<ListItem> weatherArrayList) {
+       weatherRespones.clear();
        weatherRespones.addAll(weatherArrayList);
        weatherAdapter.notifyDataSetChanged();
-
-
-
     }
+
 
     @Override
     public void errorView(Throwable throwable) {
-        Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
+   //     Toast.makeText(getActivity(), throwable.getMessage(), Toast.LENGTH_LONG).show();
     }
 
-    /*private void firstUse() {
-        if (Build.VERSION.SDK_INT < 23) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-            }
-
-        } else {
-            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            } else {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-                lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                tinyDB.putString("Latitude", String.valueOf(lastLocation.getLatitude()));
-                tinyDB.putString("Longitude", String.valueOf(lastLocation.getLongitude()));
-
-            }
-
-
-        }
-    }*/
 
     @Override
     public void onLocationChanged(Location location) {
