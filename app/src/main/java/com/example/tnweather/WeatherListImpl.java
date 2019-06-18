@@ -41,7 +41,7 @@ public class WeatherListImpl implements MainContract.Model {
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
                 WeatherResponse weatherRespones = response.body();
                 List<ListItem> weatherData = weatherRespones.getList();
-                onFinishListener.onFinished(weatherData);
+                onFinishListener.onFinished(weatherData, weatherRespones );
 
             }
 

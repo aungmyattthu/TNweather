@@ -1,6 +1,7 @@
 package com.example.tnweather.adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 
 import android.content.Context;
 import android.os.Build;
@@ -15,6 +16,12 @@ import com.bumptech.glide.Glide;
 import com.example.tnweather.R;
 import com.example.tnweather.model.ListItem;
 import com.example.tnweather.model.WeatherResponse;
+
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import java.util.Calendar;
 import java.util.List;
@@ -91,6 +98,12 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            Typeface custom_font = Typeface.createFromAsset(context.getAssets(),  "fonts/Futura Heavy Regular.ttf");
+
+            temperature.setTypeface(custom_font);
+            status.setTypeface(custom_font);
+            day.setTypeface(custom_font);
+            date.setTypeface(custom_font);
         }
     }
 
@@ -98,4 +111,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
    public interface RecyclerItemClickListener{
         void onItemClick(ListItem weatherResponse);
     }
-}
+
+   }
+

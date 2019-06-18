@@ -2,6 +2,7 @@ package com.example.tnweather;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -12,8 +13,15 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 import com.example.tnweather.model.TinyDB;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -81,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         if(!tinyDB.getBoolean("firstTime"))
         {
             tinyDB.putBoolean("firstTime",true);
+            checkLocationSetting();
             firstUse();
             getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).commit();
 
@@ -114,8 +123,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else
             {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
-                lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,this);
+                lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
                 tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
             }
@@ -124,18 +133,47 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
         }
 
-        //  tinyDB.putBoolean("firstTime",false);
-
     }
 
+    public void checkLocationSetting(){
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        SettingsClient client = LocationServices.getSettingsClient(this);
+        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
 
-    private void test(){
-        Toast.makeText(this, "latitute:" + tinyDB.getString("Latitude"), Toast.LENGTH_SHORT).show();
+        task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                // All location settings are satisfied. The client can initialize
+                // location requests here.
+                // ...
+            }
+        });
+
+        task.addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if (e instanceof ResolvableApiException) {
+                    // Location settings are not satisfied, but this can be fixed
+                    // by showing the user a dialog.
+                    try {
+                        // Show the dialog by calling startResolutionForResult(),
+                        // and check the result in onActivityResult().
+                        ResolvableApiException resolvable = (ResolvableApiException) e;
+                        resolvable.startResolutionForResult(MainActivity.this,
+                                1);
+                    } catch (IntentSender.SendIntentException sendEx) {
+                        // Ignore the error.
+                    }
+                }
+            }
+        });
     }
 
     @Override
     public void onLocationChanged(Location location) {
-
+        Log.d("LocationChanged", "onLocationChanged: "+location.getLongitude());
+        tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
+        tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
     }
 
     @Override
@@ -152,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public void onProviderDisabled(String s) {
 
     }
+
 
 }
 
