@@ -24,7 +24,7 @@ public interface MainContract {
 
         void loadingView();
         void hideloading();
-        void setDataToRecyclerView(List<ListItem> weatherArrayList, WeatherResponse weatherResponse, Calendar today);
+        void setDataToRecyclerView(List<ListItem> weatherArrayList, WeatherResponse weatherResponse);
         void errorView(Throwable throwable);
 
 

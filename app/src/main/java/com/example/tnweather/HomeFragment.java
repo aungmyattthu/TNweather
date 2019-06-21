@@ -41,22 +41,19 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeFragment extends Fragment implements MainContract.View, LocationListener {
+public class HomeFragment extends Fragment implements MainContract.View{
 
     private WeatherResponePresenter presenter;
     private List<ListItem> weatherRespones;
     private WeatherAdapter weatherAdapter;
-    private WeatherAdapter.RecyclerItemClickListener clickListener;
-
     private TinyDB tinyDB;
-    private LocationManager locationManager;
-    private Location lastLocation;
+
     @BindView(R.id.recycler_view)
     public RecyclerView recyclerView;
-    private FusedLocationProviderClient fusedLocationClient;
 
     @BindView(R.id.progress_bar)
     public ProgressBar progressBar;
+
     @BindView(R.id.location)
     public TextView locationText;
 
@@ -86,25 +83,13 @@ public class HomeFragment extends Fragment implements MainContract.View, Locatio
         return fragment;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-                }
-
-            }
-        }
-    }
-
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.home_fragment, container, false);
         ButterKnife.bind(this, v);
+        tinyDB = new TinyDB(getActivity());
         initUI();
         presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
         presenter.requestDataFromServer();
@@ -114,7 +99,6 @@ public class HomeFragment extends Fragment implements MainContract.View, Locatio
                 initUI();
                 presenter = new WeatherResponePresenter(HomeFragment.this, new WeatherListImpl(getContext()));
                 presenter.requestDataFromServer();
-
                 swipeRefreshLayout.setRefreshing(false);
 
 
@@ -170,16 +154,12 @@ public class HomeFragment extends Fragment implements MainContract.View, Locatio
     }
 
     @Override
-    public void setDataToRecyclerView(List<ListItem> weatherArrayList, WeatherResponse weatherResponse, Calendar today) {
+    public void setDataToRecyclerView(List<ListItem> weatherArrayList, WeatherResponse weatherResponse) {
        weatherRespones.addAll(weatherArrayList);
        weatherAdapter.notifyDataSetChanged();
-        //weatherArrayList.get(0).
-        locationText.setText(weatherResponse.getCity().getName());
-
+       locationText.setText(weatherResponse.getCity().getName());
 
         Long calendar = Calendar.getInstance().getTimeInMillis();
-        //Long calendar = today.getTimeInMillis();
-        //Long difference = calendarNow - calendar;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
         String s = simpleDateFormat.format(calendar);
         SimpleDateFormat simple = new SimpleDateFormat("HH");
@@ -195,7 +175,7 @@ public class HomeFragment extends Fragment implements MainContract.View, Locatio
 
     @Override
     public void errorView(Throwable throwable) {
-        Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
+    //    Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
        // recyclerView.setVisibility(View.VISIBLE);
         //progressBar.setVisibility(View.GONE);
         errorText.setVisibility(View.VISIBLE);
@@ -214,23 +194,5 @@ public class HomeFragment extends Fragment implements MainContract.View, Locatio
     }
 
 
-    @Override
-    public void onLocationChanged(Location location) {
 
-    }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
 }

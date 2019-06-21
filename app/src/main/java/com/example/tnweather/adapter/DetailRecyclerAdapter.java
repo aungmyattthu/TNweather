@@ -1,6 +1,7 @@
 package com.example.tnweather.adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,7 +50,7 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<DetailRecyclerAd
         holder.status.setText(weatherResponses.get(position).getWeather().get(0).getMain());
 
         holder.date.setText(weatherResponses.get(position).getDtTxt());
-        Glide.with(context).load("http://openweathermap.org/img/(long) weatherResponses.get(position).getDt())w/"+weatherResponses.get(position).getWeather().get(0).getIcon()+".png").into(holder.weatherImg);
+        Glide.with(context).load("http://openweathermap.org/img/w/"+weatherResponses.get(position).getWeather().get(0).getIcon()+".png").into(holder.weatherImg);
 
     }
 
@@ -70,6 +71,11 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<DetailRecyclerAd
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            Typeface custom_font = Typeface.createFromAsset(context.getAssets(),  "fonts/Futura Heavy Regular.ttf");
+
+            temperature.setTypeface(custom_font);
+            status.setTypeface(custom_font);
+            date.setTypeface(custom_font);
         }
     }
 }

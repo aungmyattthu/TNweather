@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="Error Occur! Try again!"
-                app:layout_constraintBottom_toTopOf="@+id/retryBtn"
+                app:layout_constraintBottom_toTopOf="@id/retryBtn"
                 app:layout_constraintEnd_toEndOf="@+id/retryBtn"
                 app:layout_constraintStart_toStartOf="@+id/retryBtn" />
 

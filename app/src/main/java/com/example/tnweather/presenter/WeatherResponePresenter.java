@@ -21,9 +21,7 @@ public class WeatherResponePresenter implements MainContract.Presenter, MainCont
 
     @Override
     public void onFinished(List<ListItem> weatherArrayList,WeatherResponse weatherResponse) {
-        Calendar calendar = Calendar.getInstance();
-
-        weatherView.setDataToRecyclerView(weatherArrayList,weatherResponse,calendar);
+         weatherView.setDataToRecyclerView(weatherArrayList,weatherResponse);
         if (weatherView != null)
         {
             weatherView.hideloading();
@@ -33,9 +31,10 @@ public class WeatherResponePresenter implements MainContract.Presenter, MainCont
 
     @Override
     public void onFailure(Throwable t) {
+        weatherView.errorView(t);
         if (weatherView != null)
         {
-            weatherView.errorView(t);
+
             weatherView.hideloading();
         }
 

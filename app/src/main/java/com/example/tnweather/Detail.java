@@ -8,17 +8,16 @@ import butterknife.ButterKnife;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.tnweather.adapter.DetailRecyclerAdapter;
-import com.example.tnweather.adapter.WeatherAdapter;
 import com.example.tnweather.model.ListItem;
 import com.example.tnweather.model.WeatherResponse;
 import com.example.tnweather.presenter.WeatherResponePresenter;
@@ -51,6 +50,7 @@ public class Detail extends AppCompatActivity implements MainContract.View{
     private WeatherResponePresenter presenter;
     private List<ListItem> weatherRespones;
     private DetailRecyclerAdapter detailRecyclerAdapter;
+    private Typeface typeface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,13 +69,20 @@ public class Detail extends AppCompatActivity implements MainContract.View{
             detailRecyclerAdapter = new DetailRecyclerAdapter(weatherRespones,this);
             LinearLayoutManager manager = new LinearLayoutManager(this,RecyclerView.VERTICAL,false);
             intent= getIntent();
+        Typeface custom_font = Typeface.createFromAsset(this.getAssets(),  "fonts/Futura Heavy Regular.ttf");
+        temperature.setTypeface(custom_font);
+        status.setTypeface(custom_font);
+        humidity.setTypeface(custom_font);
+        pressure.setTypeface(custom_font);
+        windspeed.setTypeface(custom_font);
+        todayDate.setTypeface(custom_font);
             temperature.setText(intent.getStringExtra("temperature"));
             status.setText(intent.getStringExtra("status"));
             todayDate.setText(intent.getStringExtra("todaydate"));
             humidity.setText("Humidity "+ intent.getStringExtra("humidity")+" %");
             pressure.setText("Pressure " + intent.getStringExtra("pressure")+" hPa");
             windspeed.setText("Wind Speed " + intent.getStringExtra("windspeed")+" km/hour");
-        Glide.with(this).load("http://openweathermap.org/img/w/"+intent.getStringExtra("img")+".png").into(weatherImg);
+            Glide.with(this).load("http://openweathermap.org/img/w/"+intent.getStringExtra("img")+".png").into(weatherImg);
             recyclerView.setLayoutManager(manager);
             recyclerView.setAdapter(detailRecyclerAdapter);
 
@@ -105,7 +112,7 @@ public class Detail extends AppCompatActivity implements MainContract.View{
     }
 
     @Override
-    public void setDataToRecyclerView(List<ListItem> weatherArrayList) {
+    public void setDataToRecyclerView(List<ListItem> weatherArrayList, WeatherResponse weatherResponse) {
         weatherRespones.clear();
         List<ListItem> result = new ArrayList<>();
         for(ListItem weather:weatherArrayList)

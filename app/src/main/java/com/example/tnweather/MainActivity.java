@@ -39,17 +39,30 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private LocationManager locationManager;
     private Location lastLocation;
 
-    @Override
+   @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 400, 1, this);
+
+                }
+                else{
+
+                   /* tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
+                    tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));*/
+                  //  getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).commit();
                 }
 
             }
+            else{
+              return;
+            }
+
         }
+       return;
     }
 
 
@@ -85,20 +98,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         setTitle("5 Days Weather Forecast");
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).commit();
-
+        firstUse();
         if(!tinyDB.getBoolean("firstTime"))
         {
+
             tinyDB.putBoolean("firstTime",true);
             checkLocationSetting();
-            firstUse();
             getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).commit();
-
         }
         else
         {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).commit();
-            Log.i("Latitude",tinyDB.getString("Latitude"));
-            Log.i("Longitude",tinyDB.getString("Longitude"));
+
         }
 
 
@@ -114,23 +125,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+               return;
             }
+        //    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 400, 1, this);
 
+           // onLocationChanged();
         }
         else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else
             {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,this);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,400,1,this);
                 lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
                 tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
             }
             lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-            tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
+           // tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
+           // tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
         }
 
     }
@@ -172,8 +185,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onLocationChanged(Location location) {
         Log.d("LocationChanged", "onLocationChanged: "+location.getLongitude());
-        tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-        tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
+       // tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
+       // tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
     }
 
     @Override
