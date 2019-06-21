@@ -238,6 +238,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         retryBtn.setVisibility(View.VISIBLE);
         linearLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
+        errorText.setText("No Connection!");
 
     }
     public void customErrorView(){
@@ -265,6 +266,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
             }
             else{
                 customErrorView();
+                errorText.setText("No Location Data!!");
             }
         }
         else {
@@ -283,10 +285,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         tinyDB.putString("Latitude",String.valueOf(location.getLatitude()));
         tinyDB.putString("Longitude",String.valueOf(location.getLongitude()));
         setData();
-        //refreshLocation();
-        /*initUI();
-        presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
-        presenter.requestDataFromServer();*/
+
     }
 
     @Override
@@ -304,6 +303,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
     public void onProviderDisabled(String provider) {
         if(tinyDB.getString("Latitude") == null){
             customErrorView();
+            errorText.setText("Location disabled!!");
         }
 
 

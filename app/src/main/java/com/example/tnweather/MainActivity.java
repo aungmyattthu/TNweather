@@ -1,6 +1,8 @@
 package com.example.tnweather;
 
 import android.Manifest;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -188,14 +190,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         @Override
         public void onProviderEnabled (String s){
-            tinyDB.putString("Latitude", String.valueOf(lastLocation.getLatitude()));
-            tinyDB.putString("Longitude", String.valueOf(lastLocation.getLongitude()));
+//            tinyDB.putString("Latitude", String.valueOf(lastLocation.getLatitude()));
+  //          tinyDB.putString("Longitude", String.valueOf(lastLocation.getLongitude()));
             //getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
         }
 
         @Override
         public void onProviderDisabled (String s){
             //getSupportFragmentManager().beginTransaction().replace(R.id.main_container, PermissionErrorFragment.newInstance()).commit();
+        }
+        public void replaceFragment(){
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
         }
 
     }
