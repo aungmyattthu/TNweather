@@ -31,11 +31,13 @@ public class WeatherResponePresenter implements MainContract.Presenter, MainCont
     public void onFinished(List<ListItem> weatherArrayList,WeatherResponse weatherResponse) {
         Calendar calendar = Calendar.getInstance();
 
-        weatherView.setDataToRecyclerView(weatherArrayList,weatherResponse,calendar);
+
         if (weatherView != null)
         {
+            weatherView.setDataToRecyclerView(weatherArrayList,weatherResponse);
             weatherView.hideloading();
         }
+
 
     }
 

@@ -24,11 +24,11 @@ public interface MainContract {
 
         void loadingView();
         void hideloading();
-        void setDataToRecyclerView(List<ListItem> weatherArrayList, WeatherResponse weatherResponse, Calendar today);
-        void errorView(Throwable throwable);
+        void setDataToRecyclerView(List<ListItem> weatherArrayList, WeatherResponse weatherResponse);
+        void errorView(Throwable t);
 
 
-
+        //void setDataToRecyclerViewInDetail(List<ListItem> weatherArrayList);
     }
 
     interface Presenter{

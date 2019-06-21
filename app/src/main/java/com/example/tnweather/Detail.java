@@ -21,10 +21,12 @@ import com.example.tnweather.adapter.DetailRecyclerAdapter;
 import com.example.tnweather.adapter.WeatherAdapter;
 import com.example.tnweather.model.ListItem;
 import com.example.tnweather.model.WeatherResponse;
+import com.example.tnweather.presenter.WeatherDetailPresenter;
 import com.example.tnweather.presenter.WeatherResponePresenter;
 import com.example.tnweather.view.MainContract;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class Detail extends AppCompatActivity implements MainContract.View{
@@ -51,6 +53,8 @@ public class Detail extends AppCompatActivity implements MainContract.View{
     private WeatherResponePresenter presenter;
     private List<ListItem> weatherRespones;
     private DetailRecyclerAdapter detailRecyclerAdapter;
+    private WeatherDetailPresenter weatherDetailPresenter;
+    private  DetailRecyclerAdapter.DetailedRecyclerItemClickListener onCickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +63,19 @@ public class Detail extends AppCompatActivity implements MainContract.View{
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Weather Forecast");
+        initUI();
         presenter = new WeatherResponePresenter(this,new WeatherListImpl(this));
         presenter.requestDataFromServer();
-        initUI();
+
     }
 
     public void initUI(){
+       onCickListener = new DetailRecyclerAdapter.DetailedRecyclerItemClickListener() {
+           @Override
+           public void onItemClickz(ListItem weatherResponse) {
+               Toast.makeText(Detail.this, "lee pl", Toast.LENGTH_SHORT).show();
+           }
+       };
             weatherRespones = new ArrayList<>();
             detailRecyclerAdapter = new DetailRecyclerAdapter(weatherRespones,this);
             LinearLayoutManager manager = new LinearLayoutManager(this,RecyclerView.VERTICAL,false);
@@ -105,7 +116,29 @@ public class Detail extends AppCompatActivity implements MainContract.View{
     }
 
     @Override
-    public void setDataToRecyclerView(List<ListItem> weatherArrayList) {
+    public void setDataToRecyclerView(List<ListItem> weatherArrayList, WeatherResponse weatherResponse) {
+        weatherRespones.clear();
+        List<ListItem> result = new ArrayList<>();
+        for(ListItem weather:weatherArrayList)
+
+
+        {
+            if(weather.date().equals(intent.getStringExtra("todaydate"))){
+                result.add(weather);
+                Log.i("data",weather.date());
+            }
+        }
+
+        Log.i("data",intent.getStringExtra("todaydate"));
+        Log.i("data",result.toString());
+        weatherRespones.addAll(result);
+        detailRecyclerAdapter.notifyDataSetChanged();
+    }
+
+
+
+    /*@Override
+    public void setDataToRecyclerViewInDetail(List<ListItem> weatherArrayList) {
         weatherRespones.clear();
         List<ListItem> result = new ArrayList<>();
         for(ListItem weather:weatherArrayList)
@@ -120,10 +153,12 @@ public class Detail extends AppCompatActivity implements MainContract.View{
         Log.i("data",result.toString());
         weatherRespones.addAll(result);
         detailRecyclerAdapter.notifyDataSetChanged();
-    }
+    }*/
+
+
 
     @Override
-    public void errorView(Throwable throwable) {
-        Toast.makeText(this, throwable.getMessage(), Toast.LENGTH_LONG).show();
+    public void errorView(Throwable t) {
+        Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
     }
 }

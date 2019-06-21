@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.tnweather.R;
@@ -28,7 +29,7 @@ import butterknife.ButterKnife;
 public class DetailRecyclerAdapter extends RecyclerView.Adapter<DetailRecyclerAdapter.MyViewHolder> {
    private List<ListItem> weatherResponses;
    private Context context;
-
+    private DetailedRecyclerItemClickListener detailedRecyclerItemClickListener;
     public DetailRecyclerAdapter(List<ListItem> weatherResponses, Context context) {
         this.weatherResponses = weatherResponses;
         this.context = context;
@@ -44,12 +45,20 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<DetailRecyclerAd
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.temperature.setText(String.valueOf(Math.round(weatherResponses.get(position).getMain().getTemp())));
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(weatherResponses.get(position).getDt() * 1000L);
+        /*Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(weatherResponses.get(position).getDt() * 1000L);*/
         holder.status.setText(weatherResponses.get(position).getWeather().get(0).getMain());
 
         holder.date.setText(weatherResponses.get(position).getDtTxt());
-        Glide.with(context).load("http://openweathermap.org/img/(long) weatherResponses.get(position).getDt())w/"+weatherResponses.get(position).getWeather().get(0).getIcon()+".png").into(holder.weatherImg);
+        Glide.with(context).load("http://openweathermap.org/img/w/"+weatherResponses.get(position).getWeather().get(0).getIcon()+".png").into(holder.weatherImg);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //detailedRecyclerItemClickListener.onItemClickz(weatherResponses.get(position));
+                Toast.makeText(context, weatherResponses.get(position).getDtTxt(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -72,4 +81,8 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<DetailRecyclerAd
             ButterKnife.bind(this,itemView);
         }
     }
+    public interface DetailedRecyclerItemClickListener{
+        void onItemClickz(ListItem weatherResponse);
+    }
+
 }

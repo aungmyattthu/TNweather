@@ -1,6 +1,7 @@
 package com.example.tnweather.presenter;
 
 import com.example.tnweather.model.ListItem;
+import com.example.tnweather.model.WeatherResponse;
 import com.example.tnweather.view.MainContract;
 
 import java.util.List;
@@ -15,15 +16,25 @@ public class WeatherDetailPresenter implements MainContract.Presenter,MainContra
         this.weatherListModel = weatherListModel;
     }
 
-    @Override
-    public void onFinished(List<ListItem> weatherArrayList) {
-        weatherView.setDataToRecyclerView(weatherArrayList);
+
+
+
+    /*@Override
+    public void onFinished(List<ListItem> weatherArrayList, WeatherResponse weatherResponse) {
+        weatherView.setDataToRecyclerViewInDetail(weatherArrayList);
         if (weatherView != null)
         {
             weatherView.hideloading();
         }
+    }*/
 
-
+    @Override
+    public void onFinished(List<ListItem> weatherArrayList, WeatherResponse weatherResponse) {
+        weatherView.setDataToRecyclerView(weatherArrayList,weatherResponse);
+        if (weatherView != null)
+        {
+            weatherView.hideloading();
+        }
     }
 
     @Override

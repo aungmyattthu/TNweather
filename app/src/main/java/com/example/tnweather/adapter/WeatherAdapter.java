@@ -15,17 +15,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.tnweather.R;
 import com.example.tnweather.model.ListItem;
-import com.example.tnweather.model.WeatherResponse;
-
-
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -76,7 +68,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
             String date = DateFormat.format("dd", cal).toString();
             holder.status.setText(weatherResponses.get(position*8).getWeather().get(0).getMain());
             holder.date.setText(String.valueOf(date));
-            holder.day.setText(DateFormat.format("EEE",cal));
+            holder.day.setText(DateFormat.format("E",cal));
             Glide.with(context).load("http://openweathermap.org/img/w/"+weatherResponses.get(position*8).getWeather().get(0).getIcon()+".png").into(holder.weathericon);
 
 
@@ -102,8 +94,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
         TextView status;
         public @BindView(R.id.day)
         TextView day;
-        public @BindView(R.id.weather_img)
-        TextView weatherImg;
+
         public @BindView(R.id.date)
         TextView date;
         public @BindView(R.id.weather_img)
