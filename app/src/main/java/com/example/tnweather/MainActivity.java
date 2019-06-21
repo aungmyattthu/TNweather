@@ -69,9 +69,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    firstUse();
+                    //
                     Toast.makeText(MainActivity.this, "I am homefragment", Toast.LENGTH_SHORT).show();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
+                    firstUse();
+                    //getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
                     return true;
                 case R.id.navigation_dashboard:
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_container, AboutFragment.newInstance()).commit();
@@ -194,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         @Override
         public void onProviderDisabled (String s){
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_container, PermissionErrorFragment.newInstance()).commit();
+            //getSupportFragmentManager().beginTransaction().replace(R.id.main_container, PermissionErrorFragment.newInstance()).commit();
         }
 
     }

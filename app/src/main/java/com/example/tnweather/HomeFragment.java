@@ -48,6 +48,8 @@ import butterknife.ButterKnife;
 
 public class HomeFragment extends Fragment implements MainContract.View,LocationListener{
 
+    private boolean locationOff = true;
+
     private WeatherResponePresenter presenter;
     private List<ListItem> weatherRespones;
     private WeatherAdapter weatherAdapter;
@@ -100,6 +102,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
 
         refreshLocation();
+        setData();
 
        /* if(tinyDB.getString("Latitude")!= "" && tinyDB.getString("Longitude")!= null){*/
             /*initUI();
@@ -115,8 +118,9 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
             @Override
             public void onRefresh() {
                 if(tinyDB.getString("Latitude")!= "" && tinyDB.getString("Longitude")!= null){
-                    refreshLocation();
-                    initUI();
+                    //refreshLocation();
+                    //initUI();
+                    setData();
                     /*presenter = new WeatherResponePresenter(HomeFragment.this, new WeatherListImpl(getContext()));
                     presenter.requestDataFromServer();*/
 
@@ -131,7 +135,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
             }
         });
 
-        retryBtn.setOnClickListener(new View.OnClickListener() {
+        /*retryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 refreshLocation();
@@ -140,7 +144,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
                 presenter.requestDataFromServer();
 
             }
-        });
+        });*/
 
 
         return v;
@@ -244,20 +248,45 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         retryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                refreshLocation();
-                initUI();
-                presenter = new WeatherResponePresenter(HomeFragment.this, new WeatherListImpl(getContext()));
-                presenter.requestDataFromServer();
+                setData();
+
 
             }
         });
     }
 
+    public void setData(){
+
+        if(locationOff == true){
+            if(tinyDB.getString("Latitude")!= ""){
+                initUI();
+                presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
+                presenter.requestDataFromServer();
+            }
+            else{
+                customErrorView();
+            }
+        }
+        else {
+
+            initUI();
+            presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
+            presenter.requestDataFromServer();
+        }
+
+    }
+
+
     @Override
     public void onLocationChanged(Location location) {
         Log.d("sapa pl", "onLocationChanged: "+location.getLongitude());
-        tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-        tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
+        tinyDB.putString("Latitude",String.valueOf(location.getLatitude()));
+        tinyDB.putString("Longitude",String.valueOf(location.getLongitude()));
+        setData();
+        //refreshLocation();
+        /*initUI();
+        presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
+        presenter.requestDataFromServer();*/
     }
 
     @Override
@@ -267,20 +296,17 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
 
     @Override
     public void onProviderEnabled(String provider) {
-        if (String.valueOf(lastLocation.getLongitude()) != " "){
-            tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-            tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
-            //Toast.makeText(getContext(), lastLocation.toString(), Toast.LENGTH_SHORT).show();
-
-        }
-        else {
-            customErrorView();
-        }
+        locationOff = false;
+//        setData();
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        customErrorView();
+        if(tinyDB.getString("Latitude") == null){
+            customErrorView();
+        }
+
+
     }
 
     public void refreshLocation(){
@@ -306,14 +332,18 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
                     // Show an explanation to the user *asynchronously* -- don't block
                     // this thread waiting for the user's response! After the user
                     // sees the explanation, try again to request the permission.
-
+                    customErrorView();
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
                 } else {
                     // No explanation needed; request the permission
                     // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                     // app-defined int constant. The callback method gets the
                     // result of the request.
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    customErrorView();
+                    //ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+
                 }
 
             } else
@@ -321,11 +351,22 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
                // Toast.makeText(getContext(), "Location granted", Toast.LENGTH_SHORT).show();
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,900000,0,this);
                 lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                if(locationOff == false){
+                    tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
+                    tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
+                    Toast.makeText(getContext(), "fuck you", Toast.LENGTH_SHORT).show();
+                    initUI();
+                    presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
+                    presenter.requestDataFromServer();
+                }
+
                 /*tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
                 tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));*/
-                initUI();
-                presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
-                presenter.requestDataFromServer();
+
+                //initUI();
+
+
                 /*if (String.valueOf(lastLocation.getLongitude()) != " "){
                     tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
                     tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
@@ -375,17 +416,22 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
             /*((MainActivity)getActivity()).replaceFragment();*/
             //getFragmentManager().beginTransaction().replace(R.id.main_container,PermissionErrorFragment.newInstance()).commit();
             // This is Case 1 again as Permission is not granted by user
-
+            customErrorView();
             //Now further we check if used denied permanently or not
             if (ActivityCompat.shouldShowRequestPermissionRationale((MainActivity)getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
                 // case 4 User has denied permission but not permanently
+                //recyclerView.
+                customErrorView();
+                errorText.setText("You need to allow Location Permission!");
 
             } else {
                 // case 5. Permission denied permanently.
                 // You can open Permission setting's page from here now.
                 //((MainActivity)getActivity()).replaceFragment();
                 //getFragmentManager().beginTransaction().replace(R.id.main_container,PermissionErrorFragment.newInstance()).commit();
+                customErrorView();
+                errorText.setText("You need to allow permission!");
             }
 
         }
