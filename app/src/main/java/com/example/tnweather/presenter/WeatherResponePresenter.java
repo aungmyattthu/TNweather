@@ -22,10 +22,15 @@ public class WeatherResponePresenter implements MainContract.Presenter, MainCont
     @Override
     public void onFinished(List<ListItem> weatherArrayList,WeatherResponse weatherResponse) {
          weatherView.setDataToRecyclerView(weatherArrayList,weatherResponse);
+        Calendar calendar = Calendar.getInstance();
+
+
         if (weatherView != null)
         {
+            weatherView.setDataToRecyclerView(weatherArrayList,weatherResponse);
             weatherView.hideloading();
         }
+
 
     }
 

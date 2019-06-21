@@ -23,8 +23,6 @@ public class WeatherDetailPresenter implements MainContract.Presenter,MainContra
         {
             weatherView.hideloading();
         }
-
-
     }
 
     @Override

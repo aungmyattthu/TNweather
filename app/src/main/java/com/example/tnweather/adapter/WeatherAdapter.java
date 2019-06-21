@@ -9,6 +9,7 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -91,6 +92,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
         TextView status;
         public @BindView(R.id.day)
         TextView day;
+
         public @BindView(R.id.date)
         TextView date;
         public @BindView(R.id.weather_img)
@@ -112,5 +114,5 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
         void onItemClick(ListItem weatherResponse);
     }
 
-   }
 
+}

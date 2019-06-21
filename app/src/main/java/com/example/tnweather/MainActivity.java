@@ -2,7 +2,6 @@ package com.example.tnweather;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,15 +12,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 import com.example.tnweather.model.TinyDB;
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -39,30 +31,47 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private LocationManager locationManager;
     private Location lastLocation;
 
-   @Override
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
+       /* if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 400, 1, this);
-
-                }
-                else{
-
-                   /* tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-                    tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));*/
-                  //  getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).commit();
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+                    Toast.makeText(this, "Location granted", Toast.LENGTH_SHORT).show();
                 }
 
             }
             else{
-              return;
+                *//*ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);*//*
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_container,PermissionErrorFragment.newInstance()).commit();
+            }
+        }*/
+
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+
+            // This is Case 2 (Permission is now granted)
+        } else {
+            /*((MainActivity)getActivity()).replaceFragment();*/
+            //getFragmentManager().beginTransaction().replace(R.id.main_container,PermissionErrorFragment.newInstance()).commit();
+            // This is Case 1 again as Permission is not granted by user
+
+            //Now further we check if used denied permanently or not
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                // case 4 User has denied permission but not permanently
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_container, PermissionErrorFragment.newInstance()).commit();
+
+            } else {
+                // case 5. Permission denied permanently.
+                // You can open Permission setting's page from here now.
+                //((MainActivity)getActivity()).replaceFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_container, PermissionErrorFragment.newInstance()).commit();
             }
 
         }
-       return;
+
     }
 
 
@@ -73,11 +82,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
+                    firstUse();
                     Toast.makeText(MainActivity.this, "I am homefragment", Toast.LENGTH_SHORT).show();
-                   getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
-                    return  true;
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
+                    return true;
                 case R.id.navigation_dashboard:
-                   getSupportFragmentManager().beginTransaction().replace(R.id.main_container, AboutFragment.newInstance()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container, AboutFragment.newInstance()).commit();
                     Toast.makeText(MainActivity.this, "I am about fragment", Toast.LENGTH_SHORT).show();
                    return true;
 
@@ -97,26 +107,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         ButterKnife.bind(this);
         setTitle("5 Days Weather Forecast");
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).commit();
-        firstUse();
-        if(!tinyDB.getBoolean("firstTime"))
-        {
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
 
-            tinyDB.putBoolean("firstTime",true);
-            checkLocationSetting();
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).commit();
-        }
-        else
-        {
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_container,HomeFragment.newInstance()).commit();
+        if (!tinyDB.getBoolean("firstTime")) {
+            tinyDB.putBoolean("firstTime", true);
+            firstUse();
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
 
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
+            Log.i("Latitude", tinyDB.getString("Latitude"));
+            Log.i("Longitude", tinyDB.getString("Longitude"));
         }
 
 
     }
+
     private void firstUse() {
 
-        if(Build.VERSION.SDK_INT < 23) {
+        if (Build.VERSION.SDK_INT < 23) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
@@ -125,85 +134,75 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
-               return;
-            }
-        //    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 400, 1, this);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 
-           // onLocationChanged();
-        }
-        else {
+            }
+
+        } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            } else
-            {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,400,1,this);
+
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    // Show an explanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+                } else {
+                    // No explanation needed; request the permission
+                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                    // app-defined int constant. The callback method gets the
+                    // result of the request.
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                }
+
+            } else {
+                // Toast.makeText(getContext(), "Location granted", Toast.LENGTH_SHORT).show();
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, this);
                 lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-                tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
+                if (String.valueOf(lastLocation.getLongitude()) != " ") {
+                    tinyDB.putString("Latitude", String.valueOf(lastLocation.getLatitude()));
+                    tinyDB.putString("Longitude", String.valueOf(lastLocation.getLongitude()));
+                    //Toast.makeText(getContext(), lastLocation.toString(), Toast.LENGTH_SHORT).show();
+                } else {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container, PermissionErrorFragment.newInstance()).commit();
+                }
+
+
             }
-            lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-           // tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-           // tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
+        }}
+
+
+        private void test () {
+            Toast.makeText(this, "latitute:" + tinyDB.getString("Latitude"), Toast.LENGTH_SHORT).show();
         }
 
-    }
+        @Override
+        public void onLocationChanged (Location location){
+            Log.d("LocationChanged", "onLocationChanged: " + location.getLongitude());
+            tinyDB.putString("Latitude", String.valueOf(lastLocation.getLatitude()));
+            tinyDB.putString("Longitude", String.valueOf(lastLocation.getLongitude()));
+        }
 
-    public void checkLocationSetting(){
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        SettingsClient client = LocationServices.getSettingsClient(this);
-        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+        @Override
+        public void onStatusChanged (String s,int i, Bundle bundle){
 
-        task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
-            @Override
-            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                // All location settings are satisfied. The client can initialize
-                // location requests here.
-                // ...
-            }
-        });
+        }
 
-        task.addOnFailureListener(this, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                if (e instanceof ResolvableApiException) {
-                    // Location settings are not satisfied, but this can be fixed
-                    // by showing the user a dialog.
-                    try {
-                        // Show the dialog by calling startResolutionForResult(),
-                        // and check the result in onActivityResult().
-                        ResolvableApiException resolvable = (ResolvableApiException) e;
-                        resolvable.startResolutionForResult(MainActivity.this,
-                                1);
-                    } catch (IntentSender.SendIntentException sendEx) {
-                        // Ignore the error.
-                    }
-                }
-            }
-        });
-    }
+        @Override
+        public void onProviderEnabled (String s){
 
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d("LocationChanged", "onLocationChanged: "+location.getLongitude());
-       // tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-       // tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
-    }
+        }
 
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
+        @Override
+        public void onProviderDisabled (String s){
 
-    }
+        }
 
-    @Override
-    public void onProviderEnabled(String s) {
+   /* private void markAppUsed() {
+        tinyDB.putBoolean("firstTime",true);
 
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
-
+    }*/
 
 }
 
