@@ -27,4 +27,10 @@ public class Wind implements Serializable {
 	public double getSpeed(){
 		return speed;
 	}
+
+	public double getKilometer()
+	{
+		double km = speed * 1.6093;
+		return km;
+	}
 }

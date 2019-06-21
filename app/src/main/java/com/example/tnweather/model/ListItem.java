@@ -1,6 +1,14 @@
 package com.example.tnweather.model;
 
+import android.util.Log;
+
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
@@ -52,7 +60,19 @@ public class ListItem implements Serializable {
 	}
 
 	public String getDtTxt(){
-		return dtTxt;
+		String data= "";
+		String myinput = this.dtTxt;
+		SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat output = new SimpleDateFormat("hh:mm a");
+		/*String data = dtTxt.substring(11,16);
+		return data;*/
+		try {
+			data = output.format(input.parse(myinput));
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return data;
 	}
 
 	public void setWeather(List<WeatherItem> weather){
@@ -93,5 +113,11 @@ public class ListItem implements Serializable {
 
 	public Wind getWind(){
 		return wind;
+	}
+
+	public String date(){
+		String todaydate = dtTxt.substring(0,10);
+		return todaydate;
+
 	}
 }
