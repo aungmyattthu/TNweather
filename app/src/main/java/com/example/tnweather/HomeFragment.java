@@ -46,11 +46,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeFragment extends Fragment implements MainContract.View,LocationListener{
+public class HomeFragment extends Fragment implements MainContract.View,LocationListener {
 
     private WeatherResponePresenter presenter;
     private List<ListItem> weatherRespones;
     private WeatherAdapter weatherAdapter;
+    private LocationManager locationManager;
+    private Location lastLocation;
     private TinyDB tinyDB;
 
     @BindView(R.id.recycler_view)
@@ -96,42 +98,45 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
 
 
+        if (tinyDB.getString("Latitude") != "" && tinyDB.getString("Longitude") != null) {
 
-        if(tinyDB.getString("Latitude")!= "" && tinyDB.getString("Longitude")!= null){
             initUI();
             presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
             presenter.requestDataFromServer();
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    if(tinyDB.getString("Latitude")!= "" && tinyDB.getString("Longitude")!= null){
+                    if (tinyDB.getString("Latitude") != "" && tinyDB.getString("Longitude") != null) {
                         refreshLocation();
                         initUI();
                         presenter = new WeatherResponePresenter(HomeFragment.this, new WeatherListImpl(getContext()));
                         presenter.requestDataFromServer();
 
                         swipeRefreshLayout.setRefreshing(false);
-                    }
-                    else{
+                    } else {
                         customErrorView();
                     }
 
 
-
-            }
-        });
-
-
+                }
+            });
+        }
+        else {
+            customErrorView();
+        }
         return v;
     }
 
     private void initUI() {
+        weatherRespones = new ArrayList<>();
+        weatherAdapter = new WeatherAdapter(getContext(),weatherRespones);
+        LinearLayoutManager manager = new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(weatherAdapter);
 
-
-        clickListener = new WeatherAdapter.RecyclerItemClickListener() {
+        weatherAdapter.setRecyclerItemClickListener(new WeatherAdapter.RecyclerItemClickListener() {
             @Override
             public void onItemClick(ListItem weatherResponse) {
-                Toast.makeText(getContext(), weatherResponse.getMain().getTemp()+"", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), Detail.class);
                 intent.putExtra("dt",weatherResponse.getDt());
                 intent.putExtra("weatherData",weatherResponse);
@@ -139,20 +144,14 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
                 intent.putExtra("temperature",String.valueOf(Math.round(weatherResponse.getMain().getTemp())));
                 intent.putExtra("status",weatherResponse.getWeather().get(0).getMain());
                 intent.putExtra("todaydate",weatherResponse.date());
+                intent.putExtra("time",weatherResponse.getDtTxt());
                 intent.putExtra("humidity",String.valueOf(weatherResponse.getMain().getHumidity()));
                 intent.putExtra("pressure",String.valueOf(weatherResponse.getMain().getPressure()));
                 intent.putExtra("windspeed", String.valueOf(Math.round(weatherResponse.getWind().getKilometer()*100)/100.0));
                 intent.putExtra("img",weatherResponse.getWeather().get(0).getIcon());
                 startActivity(intent);
             }
-        };
-
-
-        weatherRespones = new ArrayList<>();
-        weatherAdapter = new WeatherAdapter((ArrayList<ListItem>) weatherRespones,clickListener,getContext());
-        LinearLayoutManager manager = new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(weatherAdapter);
+        });
 
 
 
@@ -185,8 +184,6 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
 
 
         Long calendar = Calendar.getInstance().getTimeInMillis();
-        //Long calendar = today.getTimeInMillis();
-        //Long difference = calendarNow - calendar;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
         String s = simpleDateFormat.format(calendar);
         SimpleDateFormat simple = new SimpleDateFormat("HH");
@@ -221,6 +218,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
             }
         });
     }
+
     public void customErrorView(){
         errorText.setVisibility(View.VISIBLE);
         retryBtn.setVisibility(View.VISIBLE);
@@ -238,30 +236,8 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         });
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d("sapa pl", "onLocationChanged: "+location.getLongitude());
-        tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-        tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    public void refreshLocation(){
-        if(Build.VERSION.SDK_INT < 23) {
+    public void refreshLocation() {
+        if (Build.VERSION.SDK_INT < 23) {
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
@@ -276,28 +252,30 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
 
         }
         else {
-            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            {
 
                 if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        Manifest.permission.ACCESS_FINE_LOCATION))
+                {
                     // Show an explanation to the user *asynchronously* -- don't block
                     // this thread waiting for the user's response! After the user
                     // sees the explanation, try again to request the permission.
 
+                }
 
-
-}
-                } else {
+                else {
                     // No explanation needed; request the permission
                     // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                     // app-defined int constant. The callback method gets the
                     // result of the request.
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                 }
+            }
 
-            } else
+            else
             {
-               // Toast.makeText(getContext(), "Location granted", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getContext(), "Location granted", Toast.LENGTH_SHORT).show();
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,5000,0,this);
                 lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 if (String.valueOf(lastLocation.getLongitude()) != " "){
@@ -311,14 +289,12 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
 
 
             }
-            //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,this);
-            /*lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-            tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));*/
 
         }
 
-    }
+
+        }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -350,15 +326,39 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
                 // case 4 User has denied permission but not permanently
 
-            } else {
+            }
+            else {
                 // case 5. Permission denied permanently.
                 // You can open Permission setting's page from here now.
                 //((MainActivity)getActivity()).replaceFragment();
-                //getFragmentManager().beginTransaction().replace(R.id.main_container,PermissionErrorFragment.newInstance()).commit();
+               // getFragmentManager().beginTransaction().replace(R.id.main_container,PermissionErrorFragment.newInstance()).commit();
             }
 
         }
 
     }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d("sapa pl", "onLocationChanged: "+location.getLongitude());
+        tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
+        tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
     }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
+
+}
 

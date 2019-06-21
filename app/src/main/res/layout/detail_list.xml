@@ -124,6 +124,17 @@
             android:layout_marginLeft="16dp"
             android:textSize="16sp"
             />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="24dp"
+            android:layout_alignTop="@id/txt_windspeed"
+            android:text="Today Date"/>
+
         <TextView
             android:id="@+id/today_date"
             android:layout_width="wrap_content"

@@ -75,6 +75,7 @@ public class ListItem implements Serializable {
 		return data;
 	}
 
+
 	public void setWeather(List<WeatherItem> weather){
 		this.weather = weather;
 	}
@@ -117,7 +118,6 @@ public class ListItem implements Serializable {
 
 	public String date(){
 		String todaydate = dtTxt.substring(0,10);
-
 		return todaydate;
 
 	}
