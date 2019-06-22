@@ -101,16 +101,6 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         refreshLocation();
         setData();
 
-       /* if(tinyDB.getString("Latitude")!= "" && tinyDB.getString("Longitude")!= null){*/
-            /*initUI();
-            presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
-            presenter.requestDataFromServer();*/
-
-       /* }
-        else{
-            customErrorView();
-        }*/
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -131,18 +121,6 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
 
             }
         });
-
-        /*retryBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                refreshLocation();
-                initUI();
-                presenter = new WeatherResponePresenter(HomeFragment.this, new WeatherListImpl(getContext()));
-                presenter.requestDataFromServer();
-
-            }
-        });*/
-
 
         return v;
     }
@@ -172,9 +150,6 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
                 startActivity(intent);
             }
         });
-
-
-
         }
 
     @Override
@@ -202,7 +177,6 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
        weatherAdapter.notifyDataSetChanged();
        locationText.setText(weatherResponse.getCity().getName());
 
-
         Long calendar = Calendar.getInstance().getTimeInMillis();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
         String s = simpleDateFormat.format(calendar);
@@ -220,9 +194,6 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
 
     @Override
     public void errorView(Throwable throwable) {
-    //    Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
-       // recyclerView.setVisibility(View.VISIBLE);
-        //progressBar.setVisibility(View.GONE);
         errorText.setVisibility(View.VISIBLE);
         retryBtn.setVisibility(View.VISIBLE);
         linearLayout.setVisibility(View.GONE);
@@ -239,8 +210,6 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
             @Override
             public void onClick(View v) {
                 setData();
-
-
             }
         });
     }
@@ -273,10 +242,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         tinyDB.putString("Latitude",String.valueOf(location.getLatitude()));
         tinyDB.putString("Longitude",String.valueOf(location.getLongitude()));
         setData();
-        //refreshLocation();
-        /*initUI();
-        presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
-        presenter.requestDataFromServer();*/
+
     }
 
     @Override
@@ -333,66 +299,29 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
                     customErrorView();
                     //ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
-
                 }
 
             } else
             {
-               // Toast.makeText(getContext(), "Location granted", Toast.LENGTH_SHORT).show();
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,900000,0,this);
                 lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
                 if(locationOff == false){
                     tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
                     tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
-                    Toast.makeText(getContext(), "fuck you", Toast.LENGTH_SHORT).show();
                     initUI();
                     presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
                     presenter.requestDataFromServer();
                 }
-
-                /*tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-                tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));*/
-
-                //initUI();
-
-
-                /*if (String.valueOf(lastLocation.getLongitude()) != " "){
-                    tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-                    tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
-                    //Toast.makeText(getContext(), lastLocation.toString(), Toast.LENGTH_SHORT).show();
-                    initUI();
-                    presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
-                    presenter.requestDataFromServer();
-                }
-                else {
-                    customErrorView();
-                }
-*/
-
             }
 
         }
-
 
         }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-       /* if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
-                    Toast.makeText(this, "Location granted", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-            else{
-                *//*ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);*//*
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_container,PermissionErrorFragment.newInstance()).commit();
-            }
-        }*/
 
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 

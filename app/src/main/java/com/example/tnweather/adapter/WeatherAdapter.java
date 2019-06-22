@@ -25,8 +25,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -60,11 +62,12 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
 
 
             holder.temperature.setText(String.valueOf(Math.round(weatherResponses.get(position*8).getMain().getTemp())));
+          //  Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("EST"));
             Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(weatherResponses.get(position*8).getDt() * 1000L);
-            String date = DateFormat.format("dd", cal).toString();
+            cal.setTimeInMillis(weatherResponses.get(position*8).getDt()* 1000L);
+            String dates = DateFormat.format("dd", cal).toString();
             holder.status.setText(weatherResponses.get(position*8).getWeather().get(0).getMain());
-            holder.date.setText(String.valueOf(date));
+            holder.date.setText(String.valueOf(dates));
             holder.day.setText(DateFormat.format("EEE",cal));
             Glide.with(context).load("http://openweathermap.org/img/w/"+weatherResponses.get(position*8).getWeather().get(0).getIcon()+".png").into(holder.weathericon);
 

@@ -1,17 +1,23 @@
 package com.example.tnweather.model;
 
+import android.os.Build;
 import android.util.Log;
 
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import com.google.gson.annotations.SerializedName;
+
+import androidx.annotation.RequiresApi;
 
 public class ListItem implements Serializable {
 
@@ -64,10 +70,12 @@ public class ListItem implements Serializable {
 		String myinput = this.dtTxt;
 		SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SimpleDateFormat output = new SimpleDateFormat("hh:mm a");
-		/*String data = dtTxt.substring(11,16);
-		return data;*/
+		TimeZone timeZone = TimeZone.getTimeZone("Myanmar/Yangon");
+		//input.setTimeZone(timeZone);
+		output.setTimeZone(timeZone);
 		try {
 			data = output.format(input.parse(myinput));
+
 
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -76,6 +84,17 @@ public class ListItem implements Serializable {
 	}
 
 
+	public Long timeZone(){
+		String inputRaw = this.dtTxt;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+        Date date = null;
+        try {
+            date = sdf.parse(inputRaw);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date.getTime();
+	}
 	public void setWeather(List<WeatherItem> weather){
 		this.weather = weather;
 	}
