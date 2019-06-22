@@ -85,7 +85,7 @@ public class PermissionErrorFragment extends Fragment implements MainContract.Vi
 
             }}
         else {
-            Toast.makeText(getContext(), "hey I got a permission", Toast.LENGTH_LONG).show();
+           // Toast.makeText(getContext(), "hey I got a permission", Toast.LENGTH_LONG).show();
             ((MainActivity)getActivity()).replaceFragment();
         }
     }

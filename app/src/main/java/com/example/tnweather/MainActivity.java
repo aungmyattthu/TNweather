@@ -72,13 +72,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     //
-                    Toast.makeText(MainActivity.this, "I am homefragment", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "I am homefragment", Toast.LENGTH_SHORT).show();
                     firstUse();
+                    getSupportActionBar().setTitle("5 Days Weather Forecast");
                     //getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
                     return true;
                 case R.id.navigation_dashboard:
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_container, AboutFragment.newInstance()).commit();
-                    Toast.makeText(MainActivity.this, "I am about fragment", Toast.LENGTH_SHORT).show();
+                    getSupportActionBar().setTitle("About us");
+                   // Toast.makeText(MainActivity.this, "I am about fragment", Toast.LENGTH_SHORT).show();
                     return true;
             }
             return false;

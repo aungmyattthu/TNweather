@@ -101,8 +101,9 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         tinyDB = new TinyDB(getContext());
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
 
+
         refreshLocation();
-        setData();
+        //setData();
 
        /* if(tinyDB.getString("Latitude")!= "" && tinyDB.getString("Longitude")!= null){*/
             /*initUI();
@@ -113,6 +114,12 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         else{
             customErrorView();
         }*/
+       retryBtn.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               setData();
+           }
+       });
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -128,23 +135,13 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
                 }
                 else{
                     customErrorView();
+                    //errorText.setText("something might wrong!");
                 }
 
 
 
             }
         });
-
-        /*retryBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                refreshLocation();
-                initUI();
-                presenter = new WeatherResponePresenter(HomeFragment.this, new WeatherListImpl(getContext()));
-                presenter.requestDataFromServer();
-
-            }
-        });*/
 
 
         return v;
@@ -156,13 +153,14 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         clickListener = new WeatherAdapter.RecyclerItemClickListener() {
             @Override
             public void onItemClick(ListItem weatherResponse) {
-                Toast.makeText(getContext(), weatherResponse.getMain().getTemp()+"", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), weatherResponse.getMain().getTemp()+"", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), Detail.class);
                 intent.putExtra("dt",weatherResponse.getDt());
                 intent.putExtra("weatherData",weatherResponse);
                 intent.putExtra("weatherData",weatherResponse);
                 intent.putExtra("temperature",String.valueOf(Math.round(weatherResponse.getMain().getTemp())));
                 intent.putExtra("status",weatherResponse.getWeather().get(0).getMain());
+                intent.putExtra("time",weatherResponse.getDtTxt());
                 intent.putExtra("todaydate",weatherResponse.date());
                 intent.putExtra("humidity",String.valueOf(weatherResponse.getMain().getHumidity()));
                 intent.putExtra("pressure",String.valueOf(weatherResponse.getMain().getPressure()));
@@ -219,7 +217,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         String s = simpleDateFormat.format(calendar);
         SimpleDateFormat simple = new SimpleDateFormat("HH");
         String hour = simple.format(calendar);
-        if (Integer.parseInt(hour) >12){
+        if (Integer.parseInt(hour) >=12){
             updateTime.setText("Updated at "+s +" PM");
         }
         else
@@ -239,6 +237,12 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         linearLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
         errorText.setText("No Connection!");
+        retryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setData();
+            }
+        });
 
     }
     public void customErrorView(){
@@ -246,6 +250,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         retryBtn.setVisibility(View.VISIBLE);
         linearLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
+
         retryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -333,6 +338,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
                     // this thread waiting for the user's response! After the user
                     // sees the explanation, try again to request the permission.
                     customErrorView();
+                    errorText.setText("wahahaha");
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
                 } else {
@@ -341,6 +347,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
                     // app-defined int constant. The callback method gets the
                     // result of the request.
                     customErrorView();
+                    errorText.setText("lol");
                     //ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
 
@@ -349,42 +356,17 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
             } else
             {
                // Toast.makeText(getContext(), "Location granted", Toast.LENGTH_SHORT).show();
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,900000,0,this);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,900000,2000,this);
                 lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
                 if(locationOff == false){
                     tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
                     tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
-                    Toast.makeText(getContext(), "fuck you", Toast.LENGTH_SHORT).show();
-                    initUI();
-                    presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
-                    presenter.requestDataFromServer();
+                   // Toast.makeText(getContext(), "fuck you", Toast.LENGTH_SHORT).show();
+
                 }
-
-                /*tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-                tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));*/
-
-                //initUI();
-
-
-                /*if (String.valueOf(lastLocation.getLongitude()) != " "){
-                    tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-                    tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
-                    //Toast.makeText(getContext(), lastLocation.toString(), Toast.LENGTH_SHORT).show();
-                    initUI();
-                    presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
-                    presenter.requestDataFromServer();
-                }
-                else {
-                    customErrorView();
-                }
-*/
 
             }
-            //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,this);
-            /*lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
-            tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));*/
 
         }
 
@@ -417,6 +399,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
             //getFragmentManager().beginTransaction().replace(R.id.main_container,PermissionErrorFragment.newInstance()).commit();
             // This is Case 1 again as Permission is not granted by user
             customErrorView();
+            errorText.setText("You need to allow Location Permission!");
             //Now further we check if used denied permanently or not
             if (ActivityCompat.shouldShowRequestPermissionRationale((MainActivity)getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION)) {

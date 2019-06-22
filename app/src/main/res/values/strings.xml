@@ -1,23 +1,28 @@
 <resources>
     <string name="app_name">TNweather</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_dashboard">About us</string>
     <string name="title_notifications">Notifications</string>
     <string name="temperature">85</string>
     <string name="status">Cloudy</string>
     <string name="date">30</string>
     <string name="day">MON</string>
 
-    <string name="weather_sunny">&#xf00d;</string>
-    <string name="weather_clear_night">&#xf02e;</string>
-
-    <string name="weather_foggy">&#xf014;</string>
-    <string name="weather_cloudy">&#xf013;</string>
-    <string name="weather_rainy">&#xf019;</string>
-    <string name="weather_snowy">&#xf01b;</string>
-    <string name="weather_thunder">&#xf01e;</string>
-    <string name="weather_drizzle">&#xf01c;</string>
 
     <string name="place_not_found">Sorry, no weather data found.</string>
+
+    <string name = "about_us_title">Developed by </string>
+    <string name = "developers1"> Aung Pyae Sone </string>
+    <string name = "developers2"> Aung Myat Thu </string>
+    <string name = "dev1FbLink">  www.facebook.com/mg.ice.921  </string>
+    <string name = "dev2FbLink">  www.facebook.com/aumyatthaung  </string>
+
+    <string name = "usedLibrary1">\u2022 ButterKnife </string>
+    <string name = "usedLibrary2">\u2022 Retrofit </string>
+    <string name = "usedLibrary3">\u2022 Okhttp </string>
+    <string name = "usedLibrary4">\u2022 Glide </string>
+
+    <string name = "dataProvider">Data provided by</string>
+
 
 </resources>

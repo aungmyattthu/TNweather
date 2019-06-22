@@ -8,6 +8,7 @@ import butterknife.ButterKnife;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -48,7 +49,12 @@ public class Detail extends AppCompatActivity implements MainContract.View{
     public @BindView(R.id.today_date)
     TextView todayDate;
 
+    public @BindView(R.id.time)
+    TextView time;
+
     private Intent intent;
+
+
 
     private WeatherResponePresenter presenter;
     private List<ListItem> weatherRespones;
@@ -70,12 +76,7 @@ public class Detail extends AppCompatActivity implements MainContract.View{
     }
 
     public void initUI(){
-       onCickListener = new DetailRecyclerAdapter.DetailedRecyclerItemClickListener() {
-           @Override
-           public void onItemClickz(ListItem weatherResponse) {
-               Toast.makeText(Detail.this, "lee pl", Toast.LENGTH_SHORT).show();
-           }
-       };
+
             weatherRespones = new ArrayList<>();
             detailRecyclerAdapter = new DetailRecyclerAdapter(weatherRespones,this);
             LinearLayoutManager manager = new LinearLayoutManager(this,RecyclerView.VERTICAL,false);
@@ -86,7 +87,17 @@ public class Detail extends AppCompatActivity implements MainContract.View{
             humidity.setText("Humidity "+ intent.getStringExtra("humidity")+" %");
             pressure.setText("Pressure " + intent.getStringExtra("pressure")+" hPa");
             windspeed.setText("Wind Speed " + intent.getStringExtra("windspeed")+" km/hour");
+        time.setText(intent.getStringExtra("time"));
         Glide.with(this).load("http://openweathermap.org/img/w/"+intent.getStringExtra("img")+".png").into(weatherImg);
+
+        Typeface custom_font = Typeface.createFromAsset(this.getAssets(),  "fonts/Futura Heavy Regular.ttf");
+        temperature.setTypeface(custom_font);
+        status.setTypeface(custom_font);
+        todayDate.setTypeface(custom_font);
+        humidity.setTypeface(custom_font);
+        pressure.setTypeface(custom_font);
+        windspeed.setTypeface(custom_font);
+        time.setTypeface(custom_font);
             recyclerView.setLayoutManager(manager);
             recyclerView.setAdapter(detailRecyclerAdapter);
 
@@ -119,6 +130,7 @@ public class Detail extends AppCompatActivity implements MainContract.View{
     public void setDataToRecyclerView(List<ListItem> weatherArrayList, WeatherResponse weatherResponse) {
         weatherRespones.clear();
         List<ListItem> result = new ArrayList<>();
+        int i =0;
         for(ListItem weather:weatherArrayList)
 
 
@@ -126,11 +138,13 @@ public class Detail extends AppCompatActivity implements MainContract.View{
             if(weather.date().equals(intent.getStringExtra("todaydate"))){
                 result.add(weather);
                 Log.i("data",weather.date());
+                i++;
             }
         }
 
         Log.i("data",intent.getStringExtra("todaydate"));
         Log.i("data",result.toString());
+        Log.i("data", String.valueOf(i));
         weatherRespones.addAll(result);
         detailRecyclerAdapter.notifyDataSetChanged();
     }
@@ -159,6 +173,6 @@ public class Detail extends AppCompatActivity implements MainContract.View{
 
     @Override
     public void errorView(Throwable t) {
-        Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
+       // Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
     }
 }

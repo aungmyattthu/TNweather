@@ -1,6 +1,7 @@
 package com.example.tnweather.adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,7 +57,7 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<DetailRecyclerAd
             @Override
             public void onClick(View v) {
                 //detailedRecyclerItemClickListener.onItemClickz(weatherResponses.get(position));
-                Toast.makeText(context, weatherResponses.get(position).getDtTxt(), Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context, weatherResponses.get(position).getDtTxt(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -79,6 +80,10 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<DetailRecyclerAd
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            Typeface custom_font = Typeface.createFromAsset(context.getAssets(),  "fonts/Futura Heavy Regular.ttf");
+            temperature.setTypeface(custom_font);
+            status.setTypeface(custom_font);
+            date.setTypeface(custom_font);
         }
     }
     public interface DetailedRecyclerItemClickListener{

@@ -29,6 +29,7 @@ public class AboutFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.about_us_fragment,container,false);
+        getActivity().setTitle("About us");
         return v;
 
 

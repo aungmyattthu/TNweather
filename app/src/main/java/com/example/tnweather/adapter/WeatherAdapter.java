@@ -75,7 +75,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recyclerItemClickListener.onItemClick(weatherResponses.get(position));
+                recyclerItemClickListener.onItemClick(weatherResponses.get(position*8));
             }
         });
 
@@ -99,6 +99,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
         TextView date;
         public @BindView(R.id.weather_img)
         ImageView weathericon;
+        public @BindView(R.id.degree_celsius)
+        TextView degree;
 
 
 
@@ -111,6 +113,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
             status.setTypeface(custom_font);
             day.setTypeface(custom_font);
             date.setTypeface(custom_font);
+            degree.setTypeface(custom_font);
         }
     }
 
