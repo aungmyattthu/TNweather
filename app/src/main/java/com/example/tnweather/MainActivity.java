@@ -1,6 +1,8 @@
 package com.example.tnweather;
 
 import android.Manifest;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -70,15 +72,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     //
-                    Toast.makeText(MainActivity.this, "I am homefragment", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "I am homefragment", Toast.LENGTH_SHORT).show();
                     firstUse();
+                    getSupportActionBar().setTitle("5 Days Weather Forecast");
                     //getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
                     return true;
                 case R.id.navigation_dashboard:
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_container, AboutFragment.newInstance()).commit();
-                    Toast.makeText(MainActivity.this, "I am about fragment", Toast.LENGTH_SHORT).show();
-                   return true;
-
+                    getSupportActionBar().setTitle("About us");
+                   // Toast.makeText(MainActivity.this, "I am about fragment", Toast.LENGTH_SHORT).show();
+                    return true;
             }
             return false;
 
@@ -93,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         tinyDB = new TinyDB(this);
         ButterKnife.bind(this);
-        setTitle("5 Days Weather Forecast");
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         getSupportFragmentManager().beginTransaction().replace(R.id.main_container, PermissionErrorFragment.newInstance()).commit();
         firstUse();
@@ -190,8 +192,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         @Override
         public void onProviderEnabled (String s){
-            tinyDB.putString("Latitude", String.valueOf(lastLocation.getLatitude()));
-            tinyDB.putString("Longitude", String.valueOf(lastLocation.getLongitude()));
+//            tinyDB.putString("Latitude", String.valueOf(lastLocation.getLatitude()));
+  //          tinyDB.putString("Longitude", String.valueOf(lastLocation.getLongitude()));
             //getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
         }
 
@@ -199,11 +201,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         public void onProviderDisabled (String s){
             //getSupportFragmentManager().beginTransaction().replace(R.id.main_container, PermissionErrorFragment.newInstance()).commit();
         }
+        public void replaceFragment(){
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
+        }
 
-   /* private void markAppUsed() {
-        tinyDB.putBoolean("firstTime",true);
+    }
 
-    }*/
-
-}
 

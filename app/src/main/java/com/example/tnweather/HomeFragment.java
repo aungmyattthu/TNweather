@@ -1,8 +1,8 @@
 package com.example.tnweather;
 
-import android.content.Intent;
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,12 +53,14 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
     private WeatherResponePresenter presenter;
     private List<ListItem> weatherRespones;
     private WeatherAdapter weatherAdapter;
+    private WeatherAdapter.RecyclerItemClickListener clickListener;
+
+    private TinyDB tinyDB;
     private LocationManager locationManager;
     private Location lastLocation;
-    private TinyDB tinyDB;
-
     @BindView(R.id.recycler_view)
     public RecyclerView recyclerView;
+    private FusedLocationProviderClient fusedLocationClient;
 
     @BindView(R.id.progress_bar)
     public ProgressBar progressBar;
@@ -98,8 +101,25 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
         tinyDB = new TinyDB(getContext());
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
 
+
         refreshLocation();
-        setData();
+        //setData();
+
+       /* if(tinyDB.getString("Latitude")!= "" && tinyDB.getString("Longitude")!= null){*/
+            /*initUI();
+            presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
+            presenter.requestDataFromServer();*/
+
+       /* }
+        else{
+            customErrorView();
+        }*/
+       retryBtn.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               setData();
+           }
+       });
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -115,6 +135,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
                 }
                 else{
                     customErrorView();
+                    //errorText.setText("something might wrong!");
                 }
 
 
@@ -122,34 +143,43 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
             }
         });
 
+
         return v;
     }
 
     private void initUI() {
-        weatherRespones = new ArrayList<>();
-        weatherAdapter = new WeatherAdapter(getContext(),weatherRespones);
-        LinearLayoutManager manager = new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(weatherAdapter);
 
-        weatherAdapter.setRecyclerItemClickListener(new WeatherAdapter.RecyclerItemClickListener() {
+
+        clickListener = new WeatherAdapter.RecyclerItemClickListener() {
             @Override
             public void onItemClick(ListItem weatherResponse) {
+                //Toast.makeText(getContext(), weatherResponse.getMain().getTemp()+"", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), Detail.class);
                 intent.putExtra("dt",weatherResponse.getDt());
                 intent.putExtra("weatherData",weatherResponse);
                 intent.putExtra("weatherData",weatherResponse);
                 intent.putExtra("temperature",String.valueOf(Math.round(weatherResponse.getMain().getTemp())));
                 intent.putExtra("status",weatherResponse.getWeather().get(0).getMain());
-                intent.putExtra("todaydate",weatherResponse.date());
                 intent.putExtra("time",weatherResponse.getDtTxt());
+                intent.putExtra("todaydate",weatherResponse.date());
                 intent.putExtra("humidity",String.valueOf(weatherResponse.getMain().getHumidity()));
                 intent.putExtra("pressure",String.valueOf(weatherResponse.getMain().getPressure()));
                 intent.putExtra("windspeed", String.valueOf(Math.round(weatherResponse.getWind().getKilometer()*100)/100.0));
                 intent.putExtra("img",weatherResponse.getWeather().get(0).getIcon());
                 startActivity(intent);
             }
-        });
+        };
+
+
+        weatherRespones = new ArrayList<>();
+        weatherAdapter = new WeatherAdapter((ArrayList<ListItem>) weatherRespones,clickListener,getContext());
+        LinearLayoutManager manager = new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(weatherAdapter);
+
+
+
+
         }
 
     @Override
@@ -172,17 +202,22 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
     }
 
     @Override
+
     public void setDataToRecyclerView(List<ListItem> weatherArrayList, WeatherResponse weatherResponse) {
        weatherRespones.addAll(weatherArrayList);
-       weatherAdapter.notifyDataSetChanged();
-       locationText.setText(weatherResponse.getCity().getName());
+        weatherAdapter.notifyDataSetChanged();
+        //weatherArrayList.get(0).
+        locationText.setText(weatherResponse.getCity().getName());
+
 
         Long calendar = Calendar.getInstance().getTimeInMillis();
+        //Long calendar = today.getTimeInMillis();
+        //Long difference = calendarNow - calendar;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
         String s = simpleDateFormat.format(calendar);
         SimpleDateFormat simple = new SimpleDateFormat("HH");
         String hour = simple.format(calendar);
-        if (Integer.parseInt(hour) >12){
+        if (Integer.parseInt(hour) >=12){
             updateTime.setText("Updated at "+s +" PM");
         }
         else
@@ -194,22 +229,34 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
 
     @Override
     public void errorView(Throwable throwable) {
+        Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
+       // recyclerView.setVisibility(View.VISIBLE);
+        //progressBar.setVisibility(View.GONE);
         errorText.setVisibility(View.VISIBLE);
         retryBtn.setVisibility(View.VISIBLE);
         linearLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
+        errorText.setText("No Connection!");
+        retryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setData();
+            }
+        });
 
     }
-
     public void customErrorView(){
         errorText.setVisibility(View.VISIBLE);
         retryBtn.setVisibility(View.VISIBLE);
         linearLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
+
         retryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setData();
+
+
             }
         });
     }
@@ -224,6 +271,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
             }
             else{
                 customErrorView();
+                errorText.setText("No Location Data!!");
             }
         }
         else {
@@ -260,6 +308,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
     public void onProviderDisabled(String provider) {
         if(tinyDB.getString("Latitude") == null){
             customErrorView();
+            errorText.setText("Location disabled!!");
         }
 
 
@@ -289,6 +338,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
                     // this thread waiting for the user's response! After the user
                     // sees the explanation, try again to request the permission.
                     customErrorView();
+                    errorText.setText("wahahaha");
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
                 } else {
@@ -297,31 +347,46 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
                     // app-defined int constant. The callback method gets the
                     // result of the request.
                     customErrorView();
+                    errorText.setText("lol");
                     //ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
 
                 }
 
             } else
             {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,900000,0,this);
+               // Toast.makeText(getContext(), "Location granted", Toast.LENGTH_SHORT).show();
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,900000,2000,this);
                 lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
                 if(locationOff == false){
                     tinyDB.putString("Latitude",String.valueOf(lastLocation.getLatitude()));
                     tinyDB.putString("Longitude",String.valueOf(lastLocation.getLongitude()));
-                    initUI();
-                    presenter = new WeatherResponePresenter(this, new WeatherListImpl(getContext()));
-                    presenter.requestDataFromServer();
+                   // Toast.makeText(getContext(), "fuck you", Toast.LENGTH_SHORT).show();
+
                 }
+
             }
 
         }
 
-        }
-
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+       /* if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+                    Toast.makeText(this, "Location granted", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            else{
+                *//*ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);*//*
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_container,PermissionErrorFragment.newInstance()).commit();
+            }
+        }*/
 
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -334,6 +399,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
             //getFragmentManager().beginTransaction().replace(R.id.main_container,PermissionErrorFragment.newInstance()).commit();
             // This is Case 1 again as Permission is not granted by user
             customErrorView();
+            errorText.setText("You need to allow Location Permission!");
             //Now further we check if used denied permanently or not
             if (ActivityCompat.shouldShowRequestPermissionRationale((MainActivity)getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -342,8 +408,7 @@ public class HomeFragment extends Fragment implements MainContract.View,Location
                 customErrorView();
                 errorText.setText("You need to allow Location Permission!");
 
-            }
-            else {
+            } else {
                 // case 5. Permission denied permanently.
                 // You can open Permission setting's page from here now.
                 //((MainActivity)getActivity()).replaceFragment();

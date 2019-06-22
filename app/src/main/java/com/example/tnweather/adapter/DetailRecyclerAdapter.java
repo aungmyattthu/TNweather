@@ -2,6 +2,8 @@ package com.example.tnweather.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.tnweather.R;
 import com.example.tnweather.model.ListItem;
+import com.example.tnweather.model.WeatherResponse;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -38,6 +46,8 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<DetailRecyclerAd
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.temperature.setText(String.valueOf(Math.round(weatherResponses.get(position).getMain().getTemp())));
+        /*Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(weatherResponses.get(position).getDt() * 1000L);*/
         holder.status.setText(weatherResponses.get(position).getWeather().get(0).getMain());
 
         holder.date.setText(weatherResponses.get(position).getDtTxt());
@@ -47,7 +57,7 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<DetailRecyclerAd
             @Override
             public void onClick(View v) {
                 //detailedRecyclerItemClickListener.onItemClickz(weatherResponses.get(position));
-                Toast.makeText(context, weatherResponses.get(position).getDtTxt(), Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context, weatherResponses.get(position).getDtTxt(), Toast.LENGTH_SHORT).show();
             }
         });
 

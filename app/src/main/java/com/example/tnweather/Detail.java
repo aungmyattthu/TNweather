@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,9 +37,6 @@ public class Detail extends AppCompatActivity implements MainContract.View{
     TextView temperature;
     public @BindView(R.id.status)
     TextView status;
-
-    public @BindView(R.id.time)
-    TextView time;
     public @BindView(R.id.txt_humidity)
     TextView humidity;
     public @BindView(R.id.txt_pressure)
@@ -51,12 +49,18 @@ public class Detail extends AppCompatActivity implements MainContract.View{
     public @BindView(R.id.today_date)
     TextView todayDate;
 
+    public @BindView(R.id.time)
+    TextView time;
+
     private Intent intent;
+
+
 
     private WeatherResponePresenter presenter;
     private List<ListItem> weatherRespones;
     private DetailRecyclerAdapter detailRecyclerAdapter;
-
+    private WeatherDetailPresenter weatherDetailPresenter;
+    private  DetailRecyclerAdapter.DetailedRecyclerItemClickListener onCickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,22 +81,23 @@ public class Detail extends AppCompatActivity implements MainContract.View{
             detailRecyclerAdapter = new DetailRecyclerAdapter(weatherRespones,this);
             LinearLayoutManager manager = new LinearLayoutManager(this,RecyclerView.VERTICAL,false);
             intent= getIntent();
-        Typeface custom_font = Typeface.createFromAsset(this.getAssets(),  "fonts/Futura Heavy Regular.ttf");
-        temperature.setTypeface(custom_font);
-        status.setTypeface(custom_font);
-        humidity.setTypeface(custom_font);
-        pressure.setTypeface(custom_font);
-        windspeed.setTypeface(custom_font);
-        todayDate.setTypeface(custom_font);
-        time.setTypeface(custom_font);
             temperature.setText(intent.getStringExtra("temperature"));
             status.setText(intent.getStringExtra("status"));
             todayDate.setText(intent.getStringExtra("todaydate"));
             humidity.setText("Humidity "+ intent.getStringExtra("humidity")+" %");
             pressure.setText("Pressure " + intent.getStringExtra("pressure")+" hPa");
             windspeed.setText("Wind Speed " + intent.getStringExtra("windspeed")+" km/hour");
-            time.setText(intent.getStringExtra("time"));
-            Glide.with(this).load("http://openweathermap.org/img/w/"+intent.getStringExtra("img")+".png").into(weatherImg);
+        time.setText(intent.getStringExtra("time"));
+        Glide.with(this).load("http://openweathermap.org/img/w/"+intent.getStringExtra("img")+".png").into(weatherImg);
+
+        Typeface custom_font = Typeface.createFromAsset(this.getAssets(),  "fonts/Futura Heavy Regular.ttf");
+        temperature.setTypeface(custom_font);
+        status.setTypeface(custom_font);
+        todayDate.setTypeface(custom_font);
+        humidity.setTypeface(custom_font);
+        pressure.setTypeface(custom_font);
+        windspeed.setTypeface(custom_font);
+        time.setTypeface(custom_font);
             recyclerView.setLayoutManager(manager);
             recyclerView.setAdapter(detailRecyclerAdapter);
 
@@ -114,7 +119,6 @@ public class Detail extends AppCompatActivity implements MainContract.View{
 
     @Override
     public void loadingView() {
-
     }
 
     @Override
@@ -126,10 +130,36 @@ public class Detail extends AppCompatActivity implements MainContract.View{
     public void setDataToRecyclerView(List<ListItem> weatherArrayList, WeatherResponse weatherResponse) {
         weatherRespones.clear();
         List<ListItem> result = new ArrayList<>();
+        int i =0;
+        for(ListItem weather:weatherArrayList)
+
+
+        {
+            if(weather.date().equals(intent.getStringExtra("todaydate"))){
+                result.add(weather);
+                Log.i("data",weather.date());
+                i++;
+            }
+        }
+
+        Log.i("data",intent.getStringExtra("todaydate"));
+        Log.i("data",result.toString());
+        Log.i("data", String.valueOf(i));
+        weatherRespones.addAll(result);
+        detailRecyclerAdapter.notifyDataSetChanged();
+    }
+
+
+
+    /*@Override
+    public void setDataToRecyclerViewInDetail(List<ListItem> weatherArrayList) {
+        weatherRespones.clear();
+        List<ListItem> result = new ArrayList<>();
         for(ListItem weather:weatherArrayList)
         {
             if(weather.date().equals(intent.getStringExtra("todaydate"))){
                 result.add(weather);
+                Log.i("data",weather.date());
             }
         }
 
@@ -137,11 +167,12 @@ public class Detail extends AppCompatActivity implements MainContract.View{
         Log.i("data",result.toString());
         weatherRespones.addAll(result);
         detailRecyclerAdapter.notifyDataSetChanged();
-    }
+    }*/
+
 
 
     @Override
     public void errorView(Throwable t) {
-        Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
+       // Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
     }
 }
