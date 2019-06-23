@@ -64,8 +64,7 @@ public class ListItem implements Serializable {
 		String myinput = this.dtTxt;
 		SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SimpleDateFormat output = new SimpleDateFormat("hh:mm a");
-		/*String data = dtTxt.substring(11,16);
-		return data;*/
+
 		try {
 			data = output.format(input.parse(myinput));
 
@@ -74,6 +73,8 @@ public class ListItem implements Serializable {
 		}
 		return data;
 	}
+
+
 
 	public void setWeather(List<WeatherItem> weather){
 		this.weather = weather;

@@ -29,7 +29,7 @@ public class WeatherResponePresenter implements MainContract.Presenter, MainCont
 
     @Override
     public void onFinished(List<ListItem> weatherArrayList,WeatherResponse weatherResponse) {
-        Calendar calendar = Calendar.getInstance();
+       //Calendar calendar = Calendar.getInstance();
 
 
         if (weatherView != null)

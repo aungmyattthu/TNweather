@@ -42,8 +42,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
             // This is Case 2 (Permission is now granted)
         } else {
-            /*((MainActivity)getActivity()).replaceFragment();*/
-            //getFragmentManager().beginTransaction().replace(R.id.main_container,PermissionErrorFragment.newInstance()).commit();
+
             // This is Case 1 again as Permission is not granted by user
 
             //Now further we check if used denied permanently or not
@@ -55,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             } else {
                 // case 5. Permission denied permanently.
                 // You can open Permission setting's page from here now.
-                //((MainActivity)getActivity()).replaceFragment();
+
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_container, PermissionErrorFragment.newInstance()).commit();
             }
 
@@ -71,8 +70,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    //
-                    //Toast.makeText(MainActivity.this, "I am homefragment", Toast.LENGTH_SHORT).show();
                     firstUse();
                     getSupportActionBar().setTitle("5 Days Weather Forecast");
                     //getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
@@ -94,23 +91,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         setContentView(R.layout.activity_main);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        setTitle("5 days Weather Forecast");
         tinyDB = new TinyDB(this);
         ButterKnife.bind(this);
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         getSupportFragmentManager().beginTransaction().replace(R.id.main_container, PermissionErrorFragment.newInstance()).commit();
         firstUse();
-        //getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
-
-        /*if (!tinyDB.getBoolean("firstTime")) {
-            tinyDB.putBoolean("firstTime", true);
-            firstUse();
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
-
-        } else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
-            Log.i("Latitude", tinyDB.getString("Latitude"));
-            Log.i("Longitude", tinyDB.getString("Longitude"));
-        }*/
 
 
     }
@@ -153,9 +139,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             } else {
                 // Toast.makeText(getContext(), "Location granted", Toast.LENGTH_SHORT).show();
 
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 900000, 0, this);
-                lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
+               // locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 2000, this);
+               // lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_container, HomeFragment.newInstance()).commit();
                /* if (String.valueOf(lastLocation.getLongitude()) != " ") {
                     tinyDB.putString("Latitude", String.valueOf(lastLocation.getLatitude()));
@@ -181,8 +166,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         @Override
         public void onLocationChanged (Location location){
             Log.d("LocationChanged", "onLocationChanged: " + location.getLongitude());
-            tinyDB.putString("Latitude", String.valueOf(lastLocation.getLatitude()));
-            tinyDB.putString("Longitude", String.valueOf(lastLocation.getLongitude()));
+            tinyDB.putString("Latitude", String.valueOf(location.getLatitude()));
+            tinyDB.putString("Longitude", String.valueOf(location.getLongitude()));
         }
 
         @Override
